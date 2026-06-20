@@ -379,6 +379,13 @@ input:focus-visible {
   justify-content: space-between;
 }
 
+.voice-demo-button {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 10px;
+  font-size: 9px;
+}
+
 .secondary-button {
   border-color: var(--line-light);
   background: transparent;
@@ -1224,6 +1231,20 @@ input:focus-visible {
   flex-direction: column;
 }
 
+.vertical-fader output {
+  min-width: 48px;
+  margin: 0 0 -17px;
+  padding: 3px 4px;
+  border: 1px solid #3b4348;
+  border-radius: 2px;
+  background: #111416;
+  color: var(--amber);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 7px;
+  text-align: center;
+  z-index: 2;
+}
+
 .vertical-fader input,
 .master-fader-wrap input,
 .playback-faders input {
@@ -1258,13 +1279,6 @@ input:focus-visible {
     linear-gradient(#d9ddda, #767c7e);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
   appearance: none;
-}
-
-.vertical-fader output {
-  margin-top: -5px;
-  color: #a7afb3;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 7px;
 }
 
 .speaker-row {
@@ -1681,15 +1695,22 @@ input:focus-visible {
   font-size: 7px;
 }
 
-.master-fader-wrap input {
-  width: 150px;
-  margin-top: 72px;
-  margin-bottom: 62px;
-}
-
 .master-fader-wrap output {
+  min-width: 44px;
+  margin-top: 8px;
+  padding: 3px 5px;
+  border: 1px solid #3b4348;
+  border-radius: 2px;
+  background: #111416;
   color: var(--amber);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-align: center;
+}
+
+.master-fader-wrap input {
+  width: 150px;
+  margin-top: 62px;
+  margin-bottom: 52px;
 }
 
 .blackout-button {

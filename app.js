@@ -9,6 +9,7 @@ const tasks = {
       "Ligue o microfone dinâmico ao canal 1 e obtenha voz limpa nas duas colunas activas, sem ruído, clip ou realimentação.",
     spoken:
       "Na mesa MIDAS M trinta e dois, ligue o microfone dinâmico ao canal um, encaminhe-o para o Main L R e obtenha som limpo nas duas colunas, sem ruído nem realimentação.",
+    recordedAudio: "audio/m32-examiner.m4a",
     steps: [
       { id: "safe", label: "Confirmar colunas desligadas, mutes activos, faders e ganho baixos" },
       { id: "cables", label: "Ligar microfone, Main L e Main R com as colunas desligadas" },
@@ -25,6 +26,7 @@ const tasks = {
       "Ligue quatro projectores convencionais, coloque os canais 1 a 4 a 70%, grave a Cue 1, faça blackout de cena e reproduza a cue com GO.",
     spoken:
       "Na mesa ETC Element, ligue quatro projectores convencionais. Coloque os canais um a quatro a setenta por cento, grave a Cue um, retire a luz de cena e reproduza a Cue um através do botão Go.",
+    recordedAudio: "audio/etc-examiner.m4a",
     steps: [
       { id: "safe", label: "Confirmar Blackout activo e Grandmaster a 0%" },
       { id: "connect", label: "Ligar DMX, alimentar os projectores e ligar a console" },
@@ -73,6 +75,7 @@ const state = {
   hintsUsed: 0,
   resets: 0,
   timerId: null,
+  examinerAudio: null,
   m32: {},
   etc: {},
 };
@@ -89,6 +92,7 @@ function cacheElements() {
     "simulatorScreen",
     "resultsScreen",
     "startButton",
+    "voiceDemoButton",
     "taskBrief",
     "speakBriefButton",
     "guidedSteps",
@@ -178,6 +182,7 @@ function cacheElements() {
 
 function resetM32() {
   state.m32 = {
+    completedSteps: {},
     micConnected: false,
     leftConnected: false,
     rightConnected: false,
@@ -203,6 +208,7 @@ function resetM32() {
 
 function resetEtc() {
   state.etc = {
+    completedSteps: {},
     dmxConnected: false,
     fixturesOn: false,
     consoleOn: false,
@@ -253,6 +259,7 @@ function bindEvents() {
   });
 
   elements.startButton.addEventListener("click", startSimulation);
+  elements.voiceDemoButton.addEventListener("click", playVoiceDemo);
   elements.pauseButton.addEventListener("click", pauseSimulation);
   elements.resumeButton.addEventListener("click", resumeSimulation);
   elements.speakBriefButton.addEventListener("click", speakBrief);
@@ -304,6 +311,14 @@ function selectMode(mode) {
   state.mode = mode;
   document.querySelectorAll(".mode-card").forEach((button) => {
     button.classList.toggle("selected", button.dataset.mode === mode);
+  });
+}
+
+function playVoiceDemo() {
+  if (state.examinerAudio) state.examinerAudio.pause();
+  state.examinerAudio = new Audio("audio/siri-voice-demo.m4a");
+  state.examinerAudio.play().catch(() => {
+    elements.voiceDemoButton.textContent = "Não foi possível reproduzir a amostra";
   });
 }
 
@@ -446,6 +461,28 @@ function updateBrief() {
 
 function speakBrief() {
   const task = tasks[state.currentStation];
+  playRecordedExaminerAudio(task).then((played) => {
+    if (!played) speakBriefWithSystemVoice(task);
+  });
+}
+
+async function playRecordedExaminerAudio(task) {
+  if (!task.recordedAudio) return false;
+
+  try {
+    const response = await fetch(task.recordedAudio, { method: "HEAD" });
+    if (!response.ok) return false;
+
+    if (state.examinerAudio) state.examinerAudio.pause();
+    state.examinerAudio = new Audio(task.recordedAudio);
+    await state.examinerAudio.play();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function speakBriefWithSystemVoice(task) {
   if (!("speechSynthesis" in window)) {
     logEvent("A leitura de voz não está disponível neste navegador.", "warning");
     return;
@@ -514,7 +551,7 @@ function updateGuidedSteps() {
 
 function getM32StepStatus() {
   const m = state.m32;
-  const status = {
+  const current = {
     safe:
       !m.leftSpeakerOn &&
       !m.rightSpeakerOn &&
@@ -531,13 +568,15 @@ function getM32StepStatus() {
     output: isM32OutputReady(),
     validate: state.completed.m32,
   };
+  rememberCompletedSteps(m, current);
+  const status = { ...current, ...m.completedSteps };
   status.nextIndex = tasks.m32.steps.findIndex((step) => !status[step.id]);
   return status;
 }
 
 function getEtcStepStatus() {
   const e = state.etc;
-  const status = {
+  const current = {
     safe: e.blackout && e.grandmaster === 0,
     connect: e.dmxConnected && e.fixturesOn && e.consoleOn,
     ready: e.mode === "live" && e.grandmaster === 100 && !e.blackout,
@@ -547,8 +586,16 @@ function getEtcStepStatus() {
     play: e.cuePlayed && e.levels.every((level) => level === 70),
     validate: state.completed.etc,
   };
+  rememberCompletedSteps(e, current);
+  const status = { ...current, ...e.completedSteps };
   status.nextIndex = tasks.etc.steps.findIndex((step) => !status[step.id]);
   return status;
+}
+
+function rememberCompletedSteps(stationState, currentStatus) {
+  Object.entries(currentStatus).forEach(([step, completed]) => {
+    if (completed) stationState.completedSteps[step] = true;
+  });
 }
 
 function updateContextHint() {

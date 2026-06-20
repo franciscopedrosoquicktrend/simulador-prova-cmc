@@ -122,6 +122,11 @@
               <span aria-hidden="true">→</span>
             </button>
 
+            <button id="voiceDemoButton" class="secondary-button voice-demo-button" type="button">
+              <span aria-hidden="true">▶</span>
+              Ouvir amostra da voz Siri
+            </button>
+
             <p class="start-note">
               O simulador guarda o teu melhor resultado neste computador.
             </p>
@@ -313,8 +318,8 @@
                           MUTE
                         </button>
                         <div class="vertical-fader" data-help="Fader do canal 1. Controla quanto sinal segue para a mistura.">
-                          <input id="channelFader" type="range" min="-90" max="10" value="-90" orient="vertical" />
                           <output id="channelFaderValue">−∞</output>
+                          <input id="channelFader" type="range" min="-90" max="10" value="-90" orient="vertical" />
                         </div>
                       </div>
 
@@ -334,8 +339,8 @@
                           MUTE
                         </button>
                         <div class="vertical-fader" data-help="Fader Main L/R. O ponto normal de referência é 0 dB.">
-                          <input id="mainFader" type="range" min="-90" max="10" value="-90" orient="vertical" />
                           <output id="mainFaderValue">−∞</output>
+                          <input id="mainFader" type="range" min="-90" max="10" value="-90" orient="vertical" />
                         </div>
                       </div>
                     </section>
@@ -445,8 +450,8 @@
                       <div class="master-fader-wrap">
                         <label data-help="Grandmaster controla o nível máximo de todas as luzes. Deve estar a 100%.">
                           <span>GRANDMASTER</span>
-                          <input id="grandmaster" type="range" min="0" max="100" value="0" orient="vertical" />
                           <output id="grandmasterValue">0%</output>
+                          <input id="grandmaster" type="range" min="0" max="100" value="0" orient="vertical" />
                         </label>
                       </div>
                       <button
