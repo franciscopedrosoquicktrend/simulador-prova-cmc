@@ -108,6 +108,15 @@
               <span class="radio-mark"></span>
             </button>
 
+            <button class="scenario-card" type="button" data-scenario="knowledge">
+              <span class="mode-icon">C</span>
+              <span>
+                <strong>Consolidação técnica</strong>
+                <small>Explicar conceitos, caminho do sinal, segurança e decisões práticas</small>
+              </span>
+              <span class="radio-mark"></span>
+            </button>
+
             <div class="start-card-heading">
               <span class="status-dot"></span>
               <span>SELECCIONAR MODO</span>
@@ -546,6 +555,45 @@
                 </button>
               </div>
             </section>
+          </div>
+        </section>
+
+        <section id="knowledgeScreen" class="knowledge-screen hidden">
+          <div class="knowledge-heading">
+            <span class="section-kicker">CONSOLIDAÇÃO PARA A PROVA REAL</span>
+            <h2>Explica antes de executar.</h2>
+            <p>
+              Escolhe a resposta que darias ao examinador. Depois de responder,
+              lê a explicação em voz alta antes de avançar.
+            </p>
+          </div>
+
+          <div class="knowledge-layout">
+            <aside class="knowledge-progress-panel">
+              <span class="panel-label">PROGRESSO</span>
+              <strong><span id="knowledgeCurrent">1</span>/<span id="knowledgeTotal">10</span></strong>
+              <div class="knowledge-progress-track">
+                <i id="knowledgeProgressBar"></i>
+              </div>
+              <div>
+                <small>Respostas correctas</small>
+                <b id="knowledgeCorrect">0</b>
+              </div>
+              <div>
+                <small>Erros a rever</small>
+                <b id="knowledgeWrong">0</b>
+              </div>
+            </aside>
+
+            <article class="knowledge-card">
+              <span id="knowledgeCategory" class="panel-label">ÁUDIO · CONCEITOS</span>
+              <h3 id="knowledgeQuestion"></h3>
+              <div id="knowledgeOptions" class="knowledge-options"></div>
+              <div id="knowledgeFeedback" class="knowledge-feedback hidden"></div>
+              <button id="knowledgeNextButton" class="primary-button hidden" type="button">
+                Próxima pergunta →
+              </button>
+            </article>
           </div>
         </section>
 

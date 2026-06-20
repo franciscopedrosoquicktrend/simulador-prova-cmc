@@ -74,6 +74,129 @@ const completeSetupItems = [
   { id: "finalCheck", label: "Teste final: três microfones, L/R, quatro projectores, Blackout e GO" },
 ];
 
+const knowledgeQuestions = [
+  {
+    category: "ÁUDIO · CONCEITOS",
+    question: "Qual é a diferença entre ganho e fader?",
+    options: [
+      "O ganho ajusta a entrada do sinal; o fader controla quanto segue para a mistura.",
+      "O ganho controla as colunas; o fader alimenta o microfone.",
+      "São dois nomes para exactamente o mesmo controlo.",
+    ],
+    correct: 0,
+    explanation:
+      "Resposta para dizer em voz alta: “O ganho ajusta o nível que entra no pré-amplificador. O fader controla quanto desse sinal segue para a mistura.”",
+  },
+  {
+    category: "ÁUDIO · SEGURANÇA",
+    question: "Quando deves activar phantom +48 V?",
+    options: [
+      "Em todos os microfones XLR.",
+      "Apenas quando o equipamento ligado precisa dessa alimentação, como certos microfones de condensador.",
+      "Sempre que o sinal estiver baixo.",
+    ],
+    correct: 1,
+    explanation:
+      "Confirma primeiro o tipo de microfone. Um microfone dinâmico deste exercício não precisa de phantom; um condensador pode precisar.",
+  },
+  {
+    category: "ÁUDIO · CAMINHO DO SINAL",
+    question: "Qual é a ordem correcta do caminho do sinal?",
+    options: [
+      "Coluna → Main LR → canal → microfone.",
+      "Microfone → entrada XLR → canal → Main LR → saída XLR → coluna.",
+      "Microfone → coluna → mesa → Main LR.",
+    ],
+    correct: 1,
+    explanation:
+      "Se não houver som, segue esta ordem desde a fonte até à saída. Assim encontras em que ponto o sinal deixou de passar.",
+  },
+  {
+    category: "ÁUDIO · MEDIÇÃO",
+    question: "Para que serve o PFL/Solo durante o ajuste do microfone?",
+    options: [
+      "Para medir e ouvir o canal antes do fader, ajustando o ganho sem o enviar às colunas.",
+      "Para aumentar automaticamente o volume das colunas.",
+      "Para gravar o microfone.",
+    ],
+    correct: 0,
+    explanation:
+      "Activa PFL, pede voz ao microfone e regula o ganho para picos seguros, aproximadamente entre −18 e −12 dBFS, sem CLIP.",
+  },
+  {
+    category: "ÁUDIO · ALIMENTAÇÃO",
+    question: "Qual é a sequência segura para ligar o sistema de som?",
+    options: [
+      "Colunas primeiro, mesa depois, retirar mutes imediatamente.",
+      "Mesa preparada e em mute; colunas ligadas por último; retirar mutes no fim.",
+      "A ordem não tem importância.",
+    ],
+    correct: 1,
+    explanation:
+      "Ao desligar, faz a ordem inversa: desliga primeiro as colunas e só depois a mesa.",
+  },
+  {
+    category: "ILUMINAÇÃO · DMX",
+    question: "Como ligas quatro projectores por DMX?",
+    options: [
+      "DMX OUT da mesa → IN do projector 1; OUT do 1 → IN do 2, continuando a cadeia.",
+      "Cada projector é ligado directamente ao Main LR.",
+      "Liga apenas o último projector à mesa.",
+    ],
+    correct: 0,
+    explanation:
+      "A ligação DMX é uma cadeia. Confirma também os endereços para evitar equipamentos a responder ao canal errado.",
+  },
+  {
+    category: "ILUMINAÇÃO · CONTROLOS",
+    question: "Qual é a diferença entre Grandmaster e Blackout?",
+    options: [
+      "O Grandmaster limita a intensidade geral; o Blackout corta imediatamente toda a saída.",
+      "O Grandmaster grava cues; o Blackout muda endereços.",
+      "Não existe diferença.",
+    ],
+    correct: 0,
+    explanation:
+      "Na preparação segura, começa com Blackout activo e Grandmaster a 0%. Para operar, coloca Live, Grandmaster a 100% e retira Blackout.",
+  },
+  {
+    category: "ILUMINAÇÃO · PROGRAMAÇÃO",
+    question: "O que significa “1 THRU 4 AT 70 ENTER”?",
+    options: [
+      "Gravar a Cue 70.",
+      "Seleccionar os canais 1 a 4 e colocá-los a 70% de intensidade.",
+      "Definir o endereço DMX 70 em quatro projectores.",
+    ],
+    correct: 1,
+    explanation:
+      "THRU significa “até” e AT define a intensidade. Depois podes gravar o estado com RECORD CUE 1 ENTER.",
+  },
+  {
+    category: "MONTAGEM · VARIAÇÃO",
+    question: "Tens dois microfones dinâmicos e um condensador. Qual é a decisão correcta?",
+    options: [
+      "Activar +48 V em todos para garantir sinal.",
+      "Manter +48 V desligado nos dinâmicos e activá-lo apenas no canal do condensador, se ele precisar.",
+      "Não ligar o condensador à mesa.",
+    ],
+    correct: 1,
+    explanation:
+      "Trata cada canal individualmente. Identifica e etiqueta os microfones antes de aplicar alimentação phantom.",
+  },
+  {
+    category: "DIAGNÓSTICO · PROVA REAL",
+    question: "Se não houver som, o que deves dizer e fazer?",
+    options: [
+      "Carregar em vários botões até funcionar.",
+      "Aumentar imediatamente o ganho e os faders ao máximo.",
+      "Confirmar o estado e seguir o sinal desde o microfone até à coluna, verificando cada etapa.",
+    ],
+    correct: 2,
+    explanation:
+      "Resposta para o examinador: “Vou seguir o caminho do sinal desde a fonte, pela entrada e processamento, até à saída, mantendo uma sequência segura.”",
+  },
+];
+
 const state = {
   scenario: "essential",
   mode: "guided",
@@ -91,6 +214,8 @@ const state = {
   m32: {},
   etc: {},
   completeSetup: {},
+  knowledgeIndex: 0,
+  knowledgeAnswers: [],
 };
 
 const elements = {};
@@ -104,8 +229,19 @@ function cacheElements() {
     "welcomeScreen",
     "simulatorScreen",
     "resultsScreen",
+    "knowledgeScreen",
     "startButton",
     "voiceDemoButton",
+    "knowledgeCurrent",
+    "knowledgeTotal",
+    "knowledgeProgressBar",
+    "knowledgeCorrect",
+    "knowledgeWrong",
+    "knowledgeCategory",
+    "knowledgeQuestion",
+    "knowledgeOptions",
+    "knowledgeFeedback",
+    "knowledgeNextButton",
     "completeSetupPanel",
     "completeSetupChecklist",
     "taskBrief",
@@ -279,6 +415,7 @@ function bindEvents() {
 
   elements.startButton.addEventListener("click", startSimulation);
   elements.voiceDemoButton.addEventListener("click", playVoiceDemo);
+  elements.knowledgeNextButton.addEventListener("click", nextKnowledgeQuestion);
   elements.pauseButton.addEventListener("click", pauseSimulation);
   elements.resumeButton.addEventListener("click", resumeSimulation);
   elements.speakBriefButton.addEventListener("click", speakBrief);
@@ -362,9 +499,22 @@ function startSimulation() {
   state.hintsUsed = 0;
   state.resets = 0;
   state.completeSetup = {};
+  state.knowledgeIndex = 0;
+  state.knowledgeAnswers = [];
 
   elements.welcomeScreen.classList.add("hidden");
   elements.resultsScreen.classList.add("hidden");
+  elements.knowledgeScreen.classList.add("hidden");
+
+  if (state.scenario === "knowledge") {
+    state.running = true;
+    elements.knowledgeScreen.classList.remove("hidden");
+    elements.pauseButton.disabled = true;
+    renderKnowledgeQuestion();
+    updateHeader();
+    return;
+  }
+
   elements.simulatorScreen.classList.remove("hidden");
   elements.pauseButton.disabled = state.mode === "practice";
   elements.liveScore.textContent = state.mode === "exam" ? "—" : "20.0";
@@ -385,11 +535,93 @@ function returnHome() {
   state.running = false;
   elements.resultsScreen.classList.add("hidden");
   elements.simulatorScreen.classList.add("hidden");
+  elements.knowledgeScreen.classList.add("hidden");
   elements.welcomeScreen.classList.remove("hidden");
   elements.pauseButton.disabled = true;
   elements.timer.textContent = "18:00";
   elements.progressValue.textContent = "0%";
   elements.liveScore.textContent = "—";
+}
+
+function renderKnowledgeQuestion() {
+  const item = knowledgeQuestions[state.knowledgeIndex];
+  const correctCount = state.knowledgeAnswers.filter(Boolean).length;
+  const wrongCount = state.knowledgeAnswers.length - correctCount;
+  elements.knowledgeCurrent.textContent = state.knowledgeIndex + 1;
+  elements.knowledgeTotal.textContent = knowledgeQuestions.length;
+  elements.knowledgeCorrect.textContent = correctCount;
+  elements.knowledgeWrong.textContent = wrongCount;
+  elements.knowledgeProgressBar.style.width = `${(state.knowledgeIndex / knowledgeQuestions.length) * 100}%`;
+  elements.knowledgeCategory.textContent = item.category;
+  elements.knowledgeQuestion.textContent = item.question;
+  elements.knowledgeFeedback.classList.add("hidden");
+  elements.knowledgeNextButton.classList.add("hidden");
+  elements.knowledgeOptions.innerHTML = item.options
+    .map(
+      (option, index) =>
+        `<button class="knowledge-option" type="button" data-answer="${index}"><span>${String.fromCharCode(65 + index)}</span>${option}</button>`,
+    )
+    .join("");
+  elements.knowledgeOptions.querySelectorAll(".knowledge-option").forEach((button) => {
+    button.addEventListener("click", () => answerKnowledgeQuestion(Number(button.dataset.answer)));
+  });
+}
+
+function answerKnowledgeQuestion(answer) {
+  const item = knowledgeQuestions[state.knowledgeIndex];
+  const isCorrect = answer === item.correct;
+  state.knowledgeAnswers.push(isCorrect);
+  elements.knowledgeOptions.querySelectorAll(".knowledge-option").forEach((button, index) => {
+    button.disabled = true;
+    if (index === item.correct) button.classList.add("correct");
+    if (index === answer && !isCorrect) button.classList.add("wrong");
+  });
+  elements.knowledgeFeedback.innerHTML = `<strong>${isCorrect ? "Resposta correcta" : "Resposta a rever"}</strong>${item.explanation}`;
+  elements.knowledgeFeedback.classList.remove("hidden");
+  elements.knowledgeNextButton.textContent =
+    state.knowledgeIndex === knowledgeQuestions.length - 1 ? "Ver resultado →" : "Próxima pergunta →";
+  elements.knowledgeNextButton.classList.remove("hidden");
+  elements.knowledgeCorrect.textContent = state.knowledgeAnswers.filter(Boolean).length;
+  elements.knowledgeWrong.textContent =
+    state.knowledgeAnswers.length - state.knowledgeAnswers.filter(Boolean).length;
+}
+
+function nextKnowledgeQuestion() {
+  if (state.knowledgeIndex < knowledgeQuestions.length - 1) {
+    state.knowledgeIndex += 1;
+    renderKnowledgeQuestion();
+    return;
+  }
+  finishKnowledgeTraining();
+}
+
+function finishKnowledgeTraining() {
+  state.running = false;
+  const correct = state.knowledgeAnswers.filter(Boolean).length;
+  const score = (correct / knowledgeQuestions.length) * 20;
+  elements.knowledgeScreen.classList.add("hidden");
+  elements.resultsScreen.classList.remove("hidden");
+  elements.resultTitle.textContent = score >= 16 ? "Conhecimentos consolidados" : "Consolidação concluída";
+  elements.resultSummary.textContent = `Respondeste correctamente a ${correct} de ${knowledgeQuestions.length} perguntas. Repete em voz alta as explicações das respostas que falhaste.`;
+  elements.finalScore.textContent = score.toFixed(1);
+  elements.resultVerdict.textContent = score >= 16 ? "PREPARADO" : score >= 10 ? "A CONSOLIDAR" : "REPETIR";
+  elements.resultVerdict.style.color = score >= 16 ? "var(--green)" : score >= 10 ? "var(--amber)" : "var(--red)";
+  elements.criteriaResults.innerHTML = `
+    <div class="criterion-result">
+      <strong>Conhecimentos técnicos</strong>
+      <div class="score-bar"><i style="width:${(score / 20) * 100}%"></i></div>
+      <b>${score.toFixed(1)}/20</b>
+    </div>`;
+  elements.strengthsList.innerHTML =
+    correct > 0 ? `<li>Dominaste ${correct} conceitos essenciais sem depender da posição visual dos comandos.</li>` : "<li>Concluíste o exercício e identificaste os temas a estudar.</li>";
+  const wrongTopics = knowledgeQuestions
+    .filter((_, index) => !state.knowledgeAnswers[index])
+    .map((item) => `<li>${item.category}: ${item.question}</li>`)
+    .join("");
+  elements.improvementsList.innerHTML =
+    wrongTopics || "<li>Passar agora à Montagem completa e explicar cada acção em voz alta.</li>";
+  elements.progressValue.textContent = "100%";
+  elements.liveScore.textContent = score.toFixed(1);
 }
 
 function tickTimer() {
