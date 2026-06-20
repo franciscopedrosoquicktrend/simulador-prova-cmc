@@ -458,24 +458,34 @@ function speakBrief() {
   utterance.pitch = 1;
 
   const preferredVoice = selectPortugueseExaminerVoice(window.speechSynthesis.getVoices());
-  if (preferredVoice) {
-    utterance.voice = preferredVoice;
-    utterance.lang = preferredVoice.lang;
+  if (!preferredVoice) {
+    logEvent(
+      "O Safari não disponibilizou a voz masculina Siri/Voz 2 à aplicação. A voz Joana não será utilizada.",
+      "warning",
+    );
+    return;
   }
 
+  utterance.voice = preferredVoice;
+  utterance.lang = preferredVoice.lang;
   window.speechSynthesis.speak(utterance);
 }
 
 function selectPortugueseExaminerVoice(voices) {
-  const portugueseVoices = voices.filter((voice) => /^pt[-_]PT$/i.test(voice.lang));
+  const portugueseVoices = voices.filter(
+    (voice) => /^pt[-_]PT$/i.test(voice.lang) && !/joana|female|feminina/i.test(voice.name),
+  );
   if (portugueseVoices.length === 0) return null;
 
   const priorities = [
-    /voz\s*2/i,
-    /voice\s*2/i,
-    /siri/i,
+    /siri.*(?:voz|voice)?\s*2/i,
+    /(?:voz|voice)\s*2.*siri/i,
+    /siri.*(?:male|masculina|masculino)/i,
+    /(?:male|masculina|masculino).*siri/i,
+    /voz\s*2|voice\s*2/i,
     /joaquim/i,
-    /male|masculina/i,
+    /duarte/i,
+    /male|masculina|masculino/i,
   ];
 
   for (const pattern of priorities) {
@@ -483,7 +493,7 @@ function selectPortugueseExaminerVoice(voices) {
     if (match) return match;
   }
 
-  return portugueseVoices.find((voice) => voice.default) || portugueseVoices[0];
+  return null;
 }
 
 function updateGuidedSteps() {
