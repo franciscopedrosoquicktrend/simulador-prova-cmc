@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Simulador interactivo de preparação para a prova prática OE202511/0148 com MIDAS M32 e ETC Element."
+    />
+    <title>Prova Técnica — Simulador M32 + ETC Element</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <span class="eyebrow">OE202511/0148 · 24 JUN 2026</span>
+          <h1>Prova Técnica</h1>
+        </div>
+
+        <div class="exam-stats" aria-label="Estado da prova">
+          <div class="stat">
+            <span class="stat-label">Tempo</span>
+            <strong id="timer" class="timer">18:00</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Progresso</span>
+            <strong id="progressValue">0%</strong>
+          </div>
+          <div class="stat score-stat">
+            <span class="stat-label">Nota estimada</span>
+            <strong><span id="liveScore">—</span><small>/20</small></strong>
+          </div>
+        </div>
+
+        <button id="pauseButton" class="icon-button" type="button" aria-label="Pausar prova" disabled>
+          <span aria-hidden="true">Ⅱ</span>
+        </button>
+      </header>
+
+      <main>
+        <section id="welcomeScreen" class="welcome-screen">
+          <div class="welcome-copy">
+            <span class="section-kicker">SIMULAÇÃO PRÁTICA REALISTA</span>
+            <h2>Treina as mãos.<br />Aprende a sequência.</h2>
+            <p>
+              Executa uma prova completa nas duas mesas. Cada acção é avaliada por
+              segurança, qualidade, conhecimentos e tempo.
+            </p>
+
+            <div class="official-criteria">
+              <article>
+                <span>01</span>
+                <div>
+                  <strong>Compreensão</strong>
+                  <small>Executar exactamente o que foi pedido</small>
+                </div>
+                <b>5</b>
+              </article>
+              <article>
+                <span>02</span>
+                <div>
+                  <strong>Qualidade</strong>
+                  <small>Resultado limpo, correcto e estável</small>
+                </div>
+                <b>5</b>
+              </article>
+              <article>
+                <span>03</span>
+                <div>
+                  <strong>Celeridade</strong>
+                  <small>Menos de 18 minutos para nota máxima</small>
+                </div>
+                <b>5</b>
+              </article>
+              <article>
+                <span>04</span>
+                <div>
+                  <strong>Conhecimentos</strong>
+                  <small>Procedimento técnico e segurança</small>
+                </div>
+                <b>5</b>
+              </article>
+            </div>
+          </div>
+
+          <div class="start-card">
+            <div class="start-card-heading">
+              <span class="status-dot"></span>
+              <span>SELECCIONAR MODO</span>
+            </div>
+
+            <button class="mode-card selected" type="button" data-mode="guided">
+              <span class="mode-icon">01</span>
+              <span>
+                <strong>Treino guiado</strong>
+                <small>Indicações passo a passo e correcção imediata</small>
+              </span>
+              <span class="radio-mark"></span>
+            </button>
+
+            <button class="mode-card" type="button" data-mode="exam">
+              <span class="mode-icon">02</span>
+              <span>
+                <strong>Simulação oficial</strong>
+                <small>Sem pistas, com cronómetro e avaliação final</small>
+              </span>
+              <span class="radio-mark"></span>
+            </button>
+
+            <button class="mode-card" type="button" data-mode="practice">
+              <span class="mode-icon">03</span>
+              <span>
+                <strong>Prática livre</strong>
+                <small>Explora os comandos sem perder pontos</small>
+              </span>
+              <span class="radio-mark"></span>
+            </button>
+
+            <button id="startButton" class="primary-button" type="button">
+              <span>Iniciar preparação</span>
+              <span aria-hidden="true">→</span>
+            </button>
+
+            <p class="start-note">
+              O simulador guarda o teu melhor resultado neste computador.
+            </p>
+          </div>
+        </section>
+
+        <section id="simulatorScreen" class="simulator-screen hidden">
+          <nav class="equipment-tabs" aria-label="Equipamento da prova">
+            <button class="equipment-tab active" type="button" data-station="m32">
+              <span class="tab-number">01</span>
+              <span>
+                <small>MESA DE SOM</small>
+                <strong>MIDAS M32</strong>
+              </span>
+              <span id="m32TabStatus" class="tab-status">EM CURSO</span>
+            </button>
+            <button class="equipment-tab" type="button" data-station="etc">
+              <span class="tab-number">02</span>
+              <span>
+                <small>MESA DE ILUMINAÇÃO</small>
+                <strong>ETC ELEMENT</strong>
+              </span>
+              <span id="etcTabStatus" class="tab-status waiting">POR INICIAR</span>
+            </button>
+          </nav>
+
+          <div class="workspace-grid">
+            <aside class="brief-panel">
+              <div class="panel-label">ORDEM DO EXAMINADOR</div>
+              <div id="taskBrief" class="task-brief"></div>
+
+              <button id="speakBriefButton" class="secondary-button full-width" type="button">
+                <span aria-hidden="true">▶</span>
+                Ouvir examinador
+              </button>
+
+              <div id="guidedSteps" class="guided-steps"></div>
+
+              <div class="examiner-log">
+                <div class="panel-label">REGISTO DO EXAMINADOR</div>
+                <div id="eventLog" class="event-log" aria-live="polite"></div>
+              </div>
+            </aside>
+
+            <section class="console-stage">
+              <div class="stage-toolbar">
+                <div>
+                  <span id="stationType" class="panel-label">MESA DE SOM DIGITAL</span>
+                  <h2 id="stationTitle">MIDAS M32</h2>
+                </div>
+                <div class="toolbar-actions">
+                  <button id="helpButton" class="toolbar-button" type="button">
+                    <span>?</span> Identificar comandos
+                  </button>
+                  <button id="resetStationButton" class="toolbar-button danger" type="button">
+                    Reiniciar posto
+                  </button>
+                </div>
+              </div>
+
+              <div id="m32Station" class="station active">
+                <div class="m32-rack">
+                  <div class="connection-panel">
+                    <div class="console-brand">
+                      <span>MIDAS</span>
+                      <strong>M32</strong>
+                      <small>LIVE DIGITAL CONSOLE</small>
+                    </div>
+
+                    <div class="socket-group">
+                      <span class="control-label" data-help="Entrada física XLR do canal 1.">LOCAL INPUT</span>
+                      <button id="micSocket" class="xlr-socket input-socket" type="button">
+                        <span>1</span>
+                        <small id="micSocketState">LIVRE</small>
+                      </button>
+                    </div>
+
+                    <div class="socket-group output-group">
+                      <span class="control-label" data-help="Saídas XLR que devem transportar o Main L e Main R.">XLR OUTPUT</span>
+                      <button id="mainLSocket" class="xlr-socket output-socket" type="button">
+                        <span>15</span>
+                        <small id="mainLSocketState">MAIN L</small>
+                      </button>
+                      <button id="mainRSocket" class="xlr-socket output-socket" type="button">
+                        <span>16</span>
+                        <small id="mainRSocketState">MAIN R</small>
+                      </button>
+                    </div>
+
+                    <button id="m32Power" class="power-switch" type="button" aria-pressed="false">
+                      <span class="power-light"></span>
+                      <strong>POWER</strong>
+                      <small id="m32PowerState">OFF</small>
+                    </button>
+                  </div>
+
+                  <div class="m32-surface">
+                    <section class="selected-channel-panel">
+                      <div class="section-title">SELECTED CHANNEL</div>
+                      <div class="preamp-controls">
+                        <label class="rotary-control" data-help="Ganho do pré-amplificador. Ajusta o nível que entra na mesa.">
+                          <span>GAIN</span>
+                          <input id="gainControl" type="range" min="0" max="60" value="5" />
+                          <output id="gainValue">+5 dB</output>
+                        </label>
+                        <button
+                          id="phantomButton"
+                          class="square-console-button danger-control"
+                          type="button"
+                          data-help="Alimentação de 48 V. Deve ficar desligada para o microfone dinâmico deste exercício."
+                        >
+                          <span>+48V</span>
+                          <small>OFF</small>
+                        </button>
+                        <button
+                          id="polarityButton"
+                          class="square-console-button"
+                          type="button"
+                          data-help="Inversão de polaridade. Não é necessária neste exercício."
+                        >
+                          <span>Ø</span>
+                          <small>POLARITY</small>
+                        </button>
+                      </div>
+
+                      <div class="meter-block" data-help="O pico da voz deve ficar aproximadamente entre -18 e -12 dBFS, sem chegar a CLIP.">
+                        <div class="meter-labels"><span>-48</span><span>-18</span><span>-6</span><span>CLIP</span></div>
+                        <div class="meter-track">
+                          <div id="inputMeter" class="meter-fill"></div>
+                          <span class="meter-target"></span>
+                        </div>
+                      </div>
+
+                      <button id="testMicButton" class="console-action-button" type="button">
+                        TESTAR VOZ NO MICROFONE
+                      </button>
+                    </section>
+
+                    <section class="m32-screen-wrap">
+                      <div class="screen-tabs">
+                        <button class="screen-tab active" type="button" data-page="home">HOME</button>
+                        <button class="screen-tab" type="button" data-page="routing">ROUTING</button>
+                        <button class="screen-tab" type="button" data-page="meters">METERS</button>
+                      </div>
+                      <div id="m32Screen" class="m32-screen">
+                        <div class="screen-header">
+                          <span>CH 01</span>
+                          <strong>VOCAL MIC</strong>
+                          <span id="screenClock">00:00</span>
+                        </div>
+                        <div id="m32ScreenContent" class="screen-content"></div>
+                      </div>
+                    </section>
+
+                    <section class="monitor-panel">
+                      <div class="section-title">MONITOR</div>
+                      <button
+                        id="soloButton"
+                        class="round-console-button"
+                        type="button"
+                        data-help="PFL/Solo permite verificar o sinal de entrada antes de o enviar para as colunas."
+                      >
+                        SOLO
+                      </button>
+                      <div class="monitor-note">PFL</div>
+                    </section>
+
+                    <section class="fader-bank">
+                      <div class="channel-strip">
+                        <div class="scribble-strip">
+                          <small>01</small>
+                          <strong>VOCAL</strong>
+                        </div>
+                        <button id="channelSelect" class="select-button active" type="button">SELECT</button>
+                        <button
+                          id="channelLR"
+                          class="assign-button"
+                          type="button"
+                          data-help="Atribui o canal 1 à mistura principal Main L/R."
+                        >
+                          LR
+                        </button>
+                        <button
+                          id="channelMute"
+                          class="mute-button active"
+                          type="button"
+                          data-help="Mute corta o canal. Começa ligado e só deve ser retirado quando o sistema estiver preparado."
+                        >
+                          MUTE
+                        </button>
+                        <div class="vertical-fader" data-help="Fader do canal 1. Controla quanto sinal segue para a mistura.">
+                          <input id="channelFader" type="range" min="-90" max="10" value="-90" orient="vertical" />
+                          <output id="channelFaderValue">−∞</output>
+                        </div>
+                      </div>
+
+                      <div class="channel-strip main-strip">
+                        <div class="scribble-strip main">
+                          <small>MAIN</small>
+                          <strong>LR</strong>
+                        </div>
+                        <button class="select-button" type="button">SELECT</button>
+                        <span class="assign-spacer">ST</span>
+                        <button
+                          id="mainMute"
+                          class="mute-button active"
+                          type="button"
+                          data-help="Mute geral do Main L/R. Retira-o apenas no fim da preparação."
+                        >
+                          MUTE
+                        </button>
+                        <div class="vertical-fader" data-help="Fader Main L/R. O ponto normal de referência é 0 dB.">
+                          <input id="mainFader" type="range" min="-90" max="10" value="-90" orient="vertical" />
+                          <output id="mainFaderValue">−∞</output>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+
+                <div class="speaker-row">
+                  <article class="active-speaker" data-side="left">
+                    <div class="speaker-front">
+                      <span id="leftSpeakerLed" class="speaker-led"></span>
+                      <div class="speaker-driver large"></div>
+                      <div class="speaker-driver small"></div>
+                    </div>
+                    <div class="speaker-controls">
+                      <strong>COLUNA ESQUERDA</strong>
+                      <span id="leftCableState">XLR desligado</span>
+                      <button id="leftSpeakerPower" class="speaker-power" type="button">POWER OFF</button>
+                    </div>
+                  </article>
+
+                  <div class="sound-result">
+                    <span class="panel-label">RESULTADO DE ÁUDIO</span>
+                    <div id="soundWave" class="sound-wave" aria-hidden="true">
+                      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                    </div>
+                    <strong id="audioResult">SEM SINAL</strong>
+                    <small id="audioDetail">Prepare o sistema pela ordem segura.</small>
+                  </div>
+
+                  <article class="active-speaker" data-side="right">
+                    <div class="speaker-front">
+                      <span id="rightSpeakerLed" class="speaker-led"></span>
+                      <div class="speaker-driver large"></div>
+                      <div class="speaker-driver small"></div>
+                    </div>
+                    <div class="speaker-controls">
+                      <strong>COLUNA DIREITA</strong>
+                      <span id="rightCableState">XLR desligado</span>
+                      <button id="rightSpeakerPower" class="speaker-power" type="button">POWER OFF</button>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
+              <div id="etcStation" class="station">
+                <div class="lighting-rig">
+                  <div class="stage-preview">
+                    <div class="stage-truss">
+                      <span></span><span></span><span></span><span></span>
+                    </div>
+                    <div id="lightBeams" class="light-beams">
+                      <i data-channel="1"></i>
+                      <i data-channel="2"></i>
+                      <i data-channel="3"></i>
+                      <i data-channel="4"></i>
+                    </div>
+                    <div class="stage-floor"></div>
+                    <div class="stage-status">
+                      <span id="dmxIndicator" class="status-dot"></span>
+                      <span id="stageStatusText">SEM DMX</span>
+                    </div>
+                  </div>
+
+                  <div class="etc-rear-panel">
+                    <div class="etc-logo"><strong>ETC</strong><span>ELEMENT</span></div>
+                    <button id="dmxSocket" class="dmx-socket" type="button">
+                      <span>DMX OUT 1</span>
+                      <small id="dmxSocketState">DESLIGADO</small>
+                    </button>
+                    <button id="fixturePower" class="power-switch" type="button">
+                      <span class="power-light"></span>
+                      <strong>PROJECTORES</strong>
+                      <small id="fixturePowerState">OFF</small>
+                    </button>
+                    <button id="etcPower" class="power-switch" type="button">
+                      <span class="power-light"></span>
+                      <strong>CONSOLE</strong>
+                      <small id="etcPowerState">OFF</small>
+                    </button>
+                  </div>
+
+                  <div class="etc-surface">
+                    <section class="etc-display">
+                      <div class="etc-display-header">
+                        <strong>LIVE: CHANNELS</strong>
+                        <span id="etcModeLabel">CONSOLE OFFLINE</span>
+                      </div>
+                      <div class="channel-grid">
+                        <div class="fixture-cell" data-fixture="1"><span>1</span><strong id="channel1Level">0</strong></div>
+                        <div class="fixture-cell" data-fixture="2"><span>2</span><strong id="channel2Level">0</strong></div>
+                        <div class="fixture-cell" data-fixture="3"><span>3</span><strong id="channel3Level">0</strong></div>
+                        <div class="fixture-cell" data-fixture="4"><span>4</span><strong id="channel4Level">0</strong></div>
+                      </div>
+                      <div class="cue-display">
+                        <span>PSD CUE LIST 1</span>
+                        <div id="cueList" class="cue-list">
+                          <p><span>—</span><strong>Sem cues gravadas</strong><small>—</small></p>
+                        </div>
+                      </div>
+                      <div class="command-line">
+                        <span>CMD</span>
+                        <strong id="commandLine">Comando:</strong>
+                      </div>
+                    </section>
+
+                    <section class="etc-master-controls">
+                      <div class="master-fader-wrap">
+                        <label data-help="Grandmaster controla o nível máximo de todas as luzes. Deve estar a 100%.">
+                          <span>GRANDMASTER</span>
+                          <input id="grandmaster" type="range" min="0" max="100" value="0" orient="vertical" />
+                          <output id="grandmasterValue">0%</output>
+                        </label>
+                      </div>
+                      <button
+                        id="blackoutButton"
+                        class="blackout-button active"
+                        type="button"
+                        data-help="Blackout corta imediatamente toda a saída de luz. A luz está bloqueada enquanto estiver activo."
+                      >
+                        BLACKOUT
+                        <small>ACTIVE</small>
+                      </button>
+                      <button id="liveButton" class="etc-mode-button" type="button">LIVE</button>
+                      <button id="blindButton" class="etc-mode-button" type="button">BLIND</button>
+                    </section>
+
+                    <section class="etc-keypad" aria-label="Teclado de programação">
+                      <button type="button" data-key="1">1</button>
+                      <button type="button" data-key="2">2</button>
+                      <button type="button" data-key="3">3</button>
+                      <button type="button" data-key="At">@ AT</button>
+                      <button type="button" data-key="4">4</button>
+                      <button type="button" data-key="5">5</button>
+                      <button type="button" data-key="6">6</button>
+                      <button type="button" data-key="Thru">THRU</button>
+                      <button type="button" data-key="7">7</button>
+                      <button type="button" data-key="8">8</button>
+                      <button type="button" data-key="9">9</button>
+                      <button type="button" data-key="Full">FULL</button>
+                      <button type="button" data-key="0">0</button>
+                      <button type="button" data-key="Clear">CLEAR</button>
+                      <button type="button" data-key="Out">OUT</button>
+                      <button type="button" data-key="Enter" class="enter-key">ENTER</button>
+                    </section>
+
+                    <section class="etc-record-controls">
+                      <button type="button" data-key="Record" class="record-key">RECORD</button>
+                      <button type="button" data-key="Cue">CUE</button>
+                      <button type="button" data-key="GoToCue">GO TO CUE</button>
+                      <button id="goButton" type="button" class="go-key">GO ▶</button>
+                      <div class="playback-faders">
+                        <label>
+                          <span>MASTER</span>
+                          <input id="playbackMaster" type="range" min="0" max="100" value="100" orient="vertical" />
+                        </label>
+                        <label>
+                          <span>RATE</span>
+                          <input type="range" min="0" max="100" value="50" orient="vertical" />
+                        </label>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stage-footer">
+                <div id="contextHint" class="context-hint">
+                  <span class="hint-icon">i</span>
+                  <p>Começa por garantir que as colunas estão desligadas.</p>
+                </div>
+                <button id="validateButton" class="primary-button validate-button" type="button">
+                  Validar tarefa
+                  <span aria-hidden="true">✓</span>
+                </button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="resultsScreen" class="results-screen hidden">
+          <div class="results-heading">
+            <span class="section-kicker">RELATÓRIO DO EXAMINADOR</span>
+            <h2 id="resultTitle">Prova concluída</h2>
+            <p id="resultSummary"></p>
+          </div>
+
+          <div class="results-layout">
+            <div class="score-circle">
+              <span id="finalScore">0.0</span>
+              <small>VALORES</small>
+              <div id="resultVerdict" class="result-verdict">A REVER</div>
+            </div>
+
+            <div id="criteriaResults" class="criteria-results"></div>
+          </div>
+
+          <div class="result-details">
+            <section>
+              <h3>O que fizeste bem</h3>
+              <ul id="strengthsList"></ul>
+            </section>
+            <section>
+              <h3>O que deves repetir</h3>
+              <ul id="improvementsList"></ul>
+            </section>
+          </div>
+
+          <div class="result-actions">
+            <button id="retryButton" class="primary-button" type="button">Repetir prova</button>
+            <button id="homeButton" class="secondary-button" type="button">Voltar ao início</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="pauseDialog" class="app-dialog">
+      <div class="dialog-content">
+        <span class="section-kicker">PROVA EM PAUSA</span>
+        <h2>O cronómetro está parado.</h2>
+        <p>Retoma quando estiveres preparado para continuar.</p>
+        <button id="resumeButton" class="primary-button" type="button">Retomar prova</button>
+      </div>
+    </dialog>
+
+    <dialog id="helpDialog" class="app-dialog help-dialog">
+      <div class="dialog-content">
+        <button id="closeHelpButton" class="dialog-close" type="button" aria-label="Fechar">×</button>
+        <span class="section-kicker">IDENTIFICAÇÃO RÁPIDA</span>
+        <h2 id="helpTitle">Comandos da MIDAS M32</h2>
+        <div id="helpContent" class="help-content"></div>
+      </div>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
