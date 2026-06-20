@@ -63,7 +63,19 @@ const helpData = {
   ],
 };
 
+const completeSetupItems = [
+  { id: "inventory", label: "Contar e inspeccionar microfones, cabos, colunas e projectores" },
+  { id: "micTypes", label: "Identificar: canais 1–2 dinâmicos; canal 3 condensador" },
+  { id: "channelPlan", label: "Planear: CH1 voz, CH2 apresentação, CH3 condensador; Main L/R" },
+  { id: "phantomPlan", label: "Manter +48 V desligado nos dinâmicos; activar apenas no CH3" },
+  { id: "dmxChain", label: "Planear DMX OUT → projector 1 → 2 → 3 → 4" },
+  { id: "dmxAddress", label: "Confirmar endereços DMX 1, 2, 3 e 4 sem duplicações" },
+  { id: "cableSafety", label: "Separar sinal/alimentação e proteger cabos nas zonas de passagem" },
+  { id: "finalCheck", label: "Teste final: três microfones, L/R, quatro projectores, Blackout e GO" },
+];
+
 const state = {
+  scenario: "essential",
   mode: "guided",
   running: false,
   paused: false,
@@ -78,6 +90,7 @@ const state = {
   examinerAudio: null,
   m32: {},
   etc: {},
+  completeSetup: {},
 };
 
 const elements = {};
@@ -93,6 +106,8 @@ function cacheElements() {
     "resultsScreen",
     "startButton",
     "voiceDemoButton",
+    "completeSetupPanel",
+    "completeSetupChecklist",
     "taskBrief",
     "speakBriefButton",
     "guidedSteps",
@@ -234,6 +249,10 @@ function initialize() {
 }
 
 function bindEvents() {
+  document.querySelectorAll(".scenario-card").forEach((button) => {
+    button.addEventListener("click", () => selectScenario(button.dataset.scenario));
+  });
+
   document.querySelectorAll(".mode-card").forEach((button) => {
     button.addEventListener("click", () => selectMode(button.dataset.mode));
   });
@@ -314,6 +333,13 @@ function selectMode(mode) {
   });
 }
 
+function selectScenario(scenario) {
+  state.scenario = scenario;
+  document.querySelectorAll(".scenario-card").forEach((button) => {
+    button.classList.toggle("selected", button.dataset.scenario === scenario);
+  });
+}
+
 function playVoiceDemo() {
   if (state.examinerAudio) state.examinerAudio.pause();
   state.examinerAudio = new Audio("audio/siri-voice-demo.m4a");
@@ -335,6 +361,7 @@ function startSimulation() {
   state.actions = [];
   state.hintsUsed = 0;
   state.resets = 0;
+  state.completeSetup = {};
 
   elements.welcomeScreen.classList.add("hidden");
   elements.resultsScreen.classList.add("hidden");
@@ -394,6 +421,7 @@ function switchStation(station) {
   updateBrief();
   updateGuidedSteps();
   updateContextHint();
+  renderCompleteSetupChecklist();
 }
 
 function updateAll() {
@@ -404,6 +432,54 @@ function updateAll() {
   updateGuidedSteps();
   updateContextHint();
   updateTabStatus();
+  renderCompleteSetupChecklist();
+}
+
+function renderCompleteSetupChecklist() {
+  const isCompleteScenario = state.scenario === "complete";
+  elements.completeSetupPanel.classList.toggle("hidden", !isCompleteScenario);
+  if (!isCompleteScenario) return;
+
+  const visibleItems =
+    state.currentStation === "m32"
+      ? completeSetupItems.slice(0, 4)
+      : completeSetupItems.slice(4);
+
+  elements.completeSetupChecklist.innerHTML = visibleItems
+    .map(
+      (item) => `
+        <button class="setup-check ${state.completeSetup[item.id] ? "done" : ""}" type="button" data-setup-id="${item.id}">
+          <span>${state.completeSetup[item.id] ? "✓" : ""}</span>
+          ${item.label}
+        </button>`,
+    )
+    .join("");
+
+  elements.completeSetupChecklist.querySelectorAll(".setup-check").forEach((button) => {
+    button.addEventListener("click", () => completeSetupItem(button.dataset.setupId));
+  });
+}
+
+function completeSetupItem(id) {
+  const item = completeSetupItems.find((entry) => entry.id === id);
+  if (!item) return;
+
+  state.completeSetup[id] = !state.completeSetup[id];
+  logEvent(
+    `${item.label}: ${state.completeSetup[id] ? "confirmado" : "por confirmar"}.`,
+    state.completeSetup[id] ? "good" : "warning",
+  );
+  recordAction(`setup-${id}`);
+  renderCompleteSetupChecklist();
+}
+
+function isCompleteSetupReadyFor(station) {
+  if (state.scenario !== "complete") return true;
+  const required =
+    station === "m32"
+      ? ["inventory", "micTypes", "channelPlan", "phantomPlan"]
+      : ["dmxChain", "dmxAddress", "cableSafety", "finalCheck"];
+  return required.every((id) => state.completeSetup[id]);
 }
 
 function updateHeader() {
@@ -1274,7 +1350,12 @@ function validateCurrentTask() {
 
 function validateM32() {
   const audio = getAudioState();
-  const valid = isM32OutputReady() && state.m32.micTested && state.m32.routingViewed && audio.type === "clean";
+  const valid =
+    isM32OutputReady() &&
+    state.m32.micTested &&
+    state.m32.routingViewed &&
+    audio.type === "clean" &&
+    isCompleteSetupReadyFor("m32");
   if (!valid) {
     addMistake("m32-failed-validation", "Validação pedida antes de a tarefa de som estar correctamente concluída.", 1);
     if (state.mode !== "exam") {
@@ -1304,6 +1385,7 @@ function getMissingM32Items() {
   if (m.channelFader < -5 || m.channelFader > 3 || m.mainFader < -5 || m.mainFader > 3) missing.push("colocar os faders perto de 0 dB");
   if (m.channelMuted || m.mainMuted) missing.push("retirar os mutes");
   if (!m.leftSpeakerOn || !m.rightSpeakerOn) missing.push("ligar as duas colunas");
+  if (!isCompleteSetupReadyFor("m32")) missing.push("confirmar o plano dos três microfones e do phantom");
   return missing;
 }
 
@@ -1319,7 +1401,8 @@ function validateEtc() {
     e.cuePlayed &&
     e.currentCue === 1 &&
     e.levels.every((level) => level === 70) &&
-    e.cues[1]?.every((level) => level === 70);
+    e.cues[1]?.every((level) => level === 70) &&
+    isCompleteSetupReadyFor("etc");
 
   if (!valid) {
     addMistake("etc-failed-validation", "Validação pedida antes de a tarefa de iluminação estar correctamente concluída.", 1);
@@ -1349,6 +1432,7 @@ function getMissingEtcItems() {
   if (!e.goToOutDone) missing.push("executar Go To Cue Out");
   if (!e.cuePlayed) missing.push("premir GO");
   if (!e.levels.every((level) => level === 70)) missing.push("confirmar canais 1 a 4 a 70%");
+  if (!isCompleteSetupReadyFor("etc")) missing.push("confirmar cadeia, endereços DMX e inspecção final");
   return missing;
 }
 

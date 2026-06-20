@@ -87,6 +87,29 @@
           <div class="start-card">
             <div class="start-card-heading">
               <span class="status-dot"></span>
+              <span>SELECCIONAR MISSÃO</span>
+            </div>
+
+            <button class="scenario-card selected" type="button" data-scenario="essential">
+              <span class="mode-icon">A</span>
+              <span>
+                <strong>Prova essencial</strong>
+                <small>Um microfone, duas colunas e uma cue de iluminação</small>
+              </span>
+              <span class="radio-mark"></span>
+            </button>
+
+            <button class="scenario-card" type="button" data-scenario="complete">
+              <span class="mode-icon">B</span>
+              <span>
+                <strong>Montagem completa</strong>
+                <small>Material, vários microfones, phantom, cadeia DMX e teste final</small>
+              </span>
+              <span class="radio-mark"></span>
+            </button>
+
+            <div class="start-card-heading">
+              <span class="status-dot"></span>
               <span>SELECCIONAR MODO</span>
             </div>
 
@@ -162,6 +185,12 @@
                 <span aria-hidden="true">▶</span>
                 Ouvir examinador
               </button>
+
+              <div id="completeSetupPanel" class="complete-setup-panel hidden">
+                <div class="panel-label">PLANO DE MONTAGEM COMPLETA</div>
+                <p>Confirma cada decisão pela ordem indicada.</p>
+                <div id="completeSetupChecklist" class="complete-setup-checklist"></div>
+              </div>
 
               <div id="guidedSteps" class="guided-steps"></div>
 
