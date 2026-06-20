@@ -450,11 +450,41 @@ function speakBrief() {
     logEvent("A leitura de voz não está disponível neste navegador.", "warning");
     return;
   }
+
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(task.spoken);
   utterance.lang = "pt-PT";
-  utterance.rate = 0.92;
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+
+  const preferredVoice = selectPortugueseExaminerVoice(window.speechSynthesis.getVoices());
+  if (preferredVoice) {
+    utterance.voice = preferredVoice;
+    utterance.lang = preferredVoice.lang;
+  }
+
   window.speechSynthesis.speak(utterance);
+}
+
+function selectPortugueseExaminerVoice(voices) {
+  const portugueseVoices = voices.filter((voice) => /^pt[-_]PT$/i.test(voice.lang));
+  if (portugueseVoices.length === 0) return null;
+
+  const priorities = [
+    /voz\s*1/i,
+    /voice\s*1/i,
+    /siri/i,
+    /catarina/i,
+    /joana/i,
+    /female|feminina/i,
+  ];
+
+  for (const pattern of priorities) {
+    const match = portugueseVoices.find((voice) => pattern.test(voice.name));
+    if (match) return match;
+  }
+
+  return portugueseVoices.find((voice) => voice.default) || portugueseVoices[0];
 }
 
 function updateGuidedSteps() {
