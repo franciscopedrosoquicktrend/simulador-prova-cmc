@@ -471,12 +471,11 @@ function selectPortugueseExaminerVoice(voices) {
   if (portugueseVoices.length === 0) return null;
 
   const priorities = [
-    /voz\s*1/i,
-    /voice\s*1/i,
+    /voz\s*2/i,
+    /voice\s*2/i,
     /siri/i,
-    /catarina/i,
-    /joana/i,
-    /female|feminina/i,
+    /joaquim/i,
+    /male|masculina/i,
   ];
 
   for (const pattern of priorities) {
