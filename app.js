@@ -197,6 +197,193 @@ const knowledgeQuestions = [
   },
 ];
 
+const oralExamQuestions = [
+  {
+    category: "ANTES DA PROVA · SEGURANÇA",
+    question: "Antes de ligares qualquer coluna activa, o que confirmas na M32?",
+    options: [
+      "Colunas desligadas, canal e Main LR em mute, faders em baixo, ganho baixo e phantom desligado nos dinâmicos.",
+      "Colunas ligadas, faders a 0 dB e ganho alto para ouvir logo o microfone.",
+      "Apenas confirmo se o cabo XLR está ligado ao microfone.",
+    ],
+    correct: 0,
+    explanation:
+      "Resposta oral curta: “Começo seguro: colunas desligadas, mutes activos, faders em baixo, ganho baixo e phantom desligado para microfone dinâmico.”",
+  },
+  {
+    category: "ANTES DA PROVA · CAMINHO DO SINAL",
+    question: "Se o júri pedir para explicares o caminho do sinal do microfone até às colunas, o que dizes?",
+    options: [
+      "Microfone → entrada local XLR → canal 1 → Main L/R → saídas XLR 15/16 → colunas activas.",
+      "Microfone → colunas → Main L/R → canal 1.",
+      "Main L/R → microfone → entrada local → colunas.",
+    ],
+    correct: 0,
+    explanation:
+      "Diz isto devagar. Mostra que percebes a lógica: fonte, entrada, canal, mistura principal, saídas físicas e colunas.",
+  },
+  {
+    category: "ANTES DA PROVA · ROUTING",
+    question: "Como confirmas que o canal 1 está encaminhado para o Main L/R?",
+    options: [
+      "Selecciono o canal 1, activo LR no canal e confirmo no routing que CH 01 assign está em Main LR.",
+      "Aumento o ganho até aparecer som.",
+      "Ligo a coluna direita; se fizer ruído, está encaminhado.",
+    ],
+    correct: 0,
+    explanation:
+      "Resposta oral: “Confirmo no canal e no ecrã de routing. Não assumo que está correcto só porque há cabo ligado.”",
+  },
+  {
+    category: "ANTES DA PROVA · PFL",
+    question: "Para que usas o PFL antes de abrir o som nas colunas?",
+    options: [
+      "Para ouvir/medir o canal antes do fader e ajustar o ganho sem enviar sinal para a sala.",
+      "Para acender as colunas.",
+      "Para gravar automaticamente a voz.",
+    ],
+    correct: 0,
+    explanation:
+      "O ponto importante é segurança: ajustar o ganho primeiro, sem clip e sem realimentação, antes de abrir a saída principal.",
+  },
+  {
+    category: "ANTES DA PROVA · PHANTOM",
+    question: "O que respondes se perguntarem o que é phantom +48 V?",
+    options: [
+      "É alimentação enviada pelo cabo XLR para equipamentos que precisam dela, como certos microfones de condensador.",
+      "É um efeito para deixar a voz mais limpa.",
+      "É o volume principal da mesa.",
+    ],
+    correct: 0,
+    explanation:
+      "Acrescenta: “Num microfone dinâmico normal mantenho desligado; só activo quando confirmei que o equipamento precisa.”",
+  },
+  {
+    category: "ANTES DA PROVA · ORDEM DE LIGAÇÃO",
+    question: "Qual é a ordem segura para ligar o sistema de som?",
+    options: [
+      "Preparar mesa em mute e com faders baixos, ligar cabos, ligar mesa, confirmar routing/ganho, ligar colunas por último.",
+      "Ligar colunas primeiro, depois procurar sinal.",
+      "Ligar tudo ao mesmo tempo para ganhar tempo.",
+    ],
+    correct: 0,
+    explanation:
+      "Isto vale pontos de qualidade e conhecimentos. Rapidez sem segurança pode baixar a nota.",
+  },
+  {
+    category: "ANTES DA PROVA · ETC ELEMENT",
+    question: "Antes de enviares luz para os projectores, que estado seguro confirmas na ETC Element?",
+    options: [
+      "Blackout activo e Grandmaster a 0%, depois ligo DMX, projectores e console.",
+      "Grandmaster a 100% e Blackout desligado logo no início.",
+      "Apenas carrego em GO.",
+    ],
+    correct: 0,
+    explanation:
+      "Resposta oral: “Começo sem saída de luz inesperada: Blackout activo e Grandmaster a zero.”",
+  },
+  {
+    category: "ANTES DA PROVA · DMX",
+    question: "Como explicas a ligação DMX dos quatro projectores?",
+    options: [
+      "DMX OUT da mesa para o primeiro projector; depois OUT para IN até ao quarto, confirmando endereços.",
+      "Main L/R da mesa de som para os projectores.",
+      "Cada projector recebe som por XLR e converte em luz.",
+    ],
+    correct: 0,
+    explanation:
+      "O júri quer perceber que sabes a diferença entre áudio XLR e controlo DMX, mesmo que os conectores possam parecer parecidos.",
+  },
+  {
+    category: "ANTES DA PROVA · COMANDO ETC",
+    question: "Se te pedirem canais 1 a 4 a 70%, que comando usas?",
+    options: [
+      "1 THRU 4 AT 70 ENTER.",
+      "RECORD CUE 70 ENTER.",
+      "GO TO CUE OUT ENTER.",
+    ],
+    correct: 0,
+    explanation:
+      "Depois de teres os níveis correctos, aí sim gravas: RECORD CUE 1 ENTER.",
+  },
+  {
+    category: "ANTES DA PROVA · DIAGNÓSTICO",
+    question: "Se não houver som ou luz, qual é a melhor atitude perante o júri?",
+    options: [
+      "Dizer o que vou verificar e seguir a cadeia por ordem, sem mexer aleatoriamente em tudo.",
+      "Subir todos os faders e masters ao máximo.",
+      "Reiniciar tudo imediatamente sem diagnosticar.",
+    ],
+    correct: 0,
+    explanation:
+      "Frase útil: “Vou diagnosticar por etapas, da fonte até à saída, mantendo o sistema seguro.”",
+  },
+  {
+    category: "ANTES DA PROVA · GESTÃO DO TEMPO",
+    question: "Como ganhas celeridade sem perder qualidade?",
+    options: [
+      "Uso sempre a mesma ordem segura, digo o que estou a confirmar e evito tentativas aleatórias.",
+      "Salto a validação final para acabar mais depressa.",
+      "Começo por mexer nos comandos que parecem mais importantes.",
+    ],
+    correct: 0,
+    explanation:
+      "A prova valoriza rapidez, mas a rapidez vem da sequência memorizada: segurança, cabos, routing, teste, abertura controlada, validação.",
+  },
+  {
+    category: "ANTES DA PROVA · RESPOSTA AO JÚRI",
+    question: "Se o júri perguntar “por onde começa?”, qual é a melhor resposta?",
+    options: [
+      "Começo por garantir segurança: saídas controladas, alimentação correcta e só depois envio sinal ou luz.",
+      "Começo por carregar em GO e testar se funciona.",
+      "Começo por pôr tudo alto para confirmar rapidamente.",
+    ],
+    correct: 0,
+    explanation:
+      "Esta resposta mostra método. Depois executas: no som, colunas por último; na luz, Blackout/Grandmaster controlados.",
+  },
+];
+
+function isKnowledgeScenario() {
+  return state.scenario === "knowledge" || state.scenario === "oral";
+}
+
+function getActiveKnowledgeQuestions() {
+  return state.scenario === "oral" ? oralExamQuestions : knowledgeQuestions;
+}
+
+function getKnowledgeScreenCopy() {
+  if (state.scenario === "oral") {
+    return {
+      kicker: "PERGUNTAS ANTES DA PROVA",
+      title: "Responde como se o júri estivesse à tua frente.",
+      intro:
+        "Treina respostas curtas e seguras. Depois de cada resposta, lê a formulação sugerida em voz alta.",
+      resultGood: "Pronto para perguntas orais",
+      resultDone: "Perguntas orais concluídas",
+      summary: "perguntas de preparação oral",
+      strength:
+        "Respondeste com método a perguntas que podem aparecer antes da execução prática.",
+      improvement:
+        "Repete as respostas em voz alta até conseguires responder sem olhar para a opção certa.",
+    };
+  }
+
+  return {
+    kicker: "CONSOLIDAÇÃO PARA A PROVA REAL",
+    title: "Explica antes de executar.",
+    intro:
+      "Escolhe a resposta que darias ao examinador. Depois de responder, lê a explicação em voz alta antes de avançar.",
+    resultGood: "Conhecimentos consolidados",
+    resultDone: "Consolidação concluída",
+    summary: "perguntas",
+    strength:
+      "Dominaste conceitos essenciais sem depender da posição visual dos comandos.",
+    improvement:
+      "Passar agora à Montagem completa e explicar cada acção em voz alta.",
+  };
+}
+
 const state = {
   scenario: "essential",
   mode: "guided",
@@ -232,6 +419,9 @@ function cacheElements() {
     "knowledgeScreen",
     "startButton",
     "voiceDemoButton",
+    "knowledgeKicker",
+    "knowledgeTitle",
+    "knowledgeIntro",
     "knowledgeCurrent",
     "knowledgeTotal",
     "knowledgeProgressBar",
@@ -506,7 +696,7 @@ function startSimulation() {
   elements.resultsScreen.classList.add("hidden");
   elements.knowledgeScreen.classList.add("hidden");
 
-  if (state.scenario === "knowledge") {
+  if (isKnowledgeScenario()) {
     state.running = true;
     elements.knowledgeScreen.classList.remove("hidden");
     elements.pauseButton.disabled = true;
@@ -544,14 +734,19 @@ function returnHome() {
 }
 
 function renderKnowledgeQuestion() {
-  const item = knowledgeQuestions[state.knowledgeIndex];
+  const questions = getActiveKnowledgeQuestions();
+  const item = questions[state.knowledgeIndex];
+  const copy = getKnowledgeScreenCopy();
   const correctCount = state.knowledgeAnswers.filter(Boolean).length;
   const wrongCount = state.knowledgeAnswers.length - correctCount;
+  elements.knowledgeKicker.textContent = copy.kicker;
+  elements.knowledgeTitle.textContent = copy.title;
+  elements.knowledgeIntro.textContent = copy.intro;
   elements.knowledgeCurrent.textContent = state.knowledgeIndex + 1;
-  elements.knowledgeTotal.textContent = knowledgeQuestions.length;
+  elements.knowledgeTotal.textContent = questions.length;
   elements.knowledgeCorrect.textContent = correctCount;
   elements.knowledgeWrong.textContent = wrongCount;
-  elements.knowledgeProgressBar.style.width = `${(state.knowledgeIndex / knowledgeQuestions.length) * 100}%`;
+  elements.knowledgeProgressBar.style.width = `${(state.knowledgeIndex / questions.length) * 100}%`;
   elements.knowledgeCategory.textContent = item.category;
   elements.knowledgeQuestion.textContent = item.question;
   elements.knowledgeFeedback.classList.add("hidden");
@@ -568,7 +763,8 @@ function renderKnowledgeQuestion() {
 }
 
 function answerKnowledgeQuestion(answer) {
-  const item = knowledgeQuestions[state.knowledgeIndex];
+  const questions = getActiveKnowledgeQuestions();
+  const item = questions[state.knowledgeIndex];
   const isCorrect = answer === item.correct;
   state.knowledgeAnswers.push(isCorrect);
   elements.knowledgeOptions.querySelectorAll(".knowledge-option").forEach((button, index) => {
@@ -579,7 +775,7 @@ function answerKnowledgeQuestion(answer) {
   elements.knowledgeFeedback.innerHTML = `<strong>${isCorrect ? "Resposta correcta" : "Resposta a rever"}</strong>${item.explanation}`;
   elements.knowledgeFeedback.classList.remove("hidden");
   elements.knowledgeNextButton.textContent =
-    state.knowledgeIndex === knowledgeQuestions.length - 1 ? "Ver resultado →" : "Próxima pergunta →";
+    state.knowledgeIndex === questions.length - 1 ? "Ver resultado →" : "Próxima pergunta →";
   elements.knowledgeNextButton.classList.remove("hidden");
   elements.knowledgeCorrect.textContent = state.knowledgeAnswers.filter(Boolean).length;
   elements.knowledgeWrong.textContent =
@@ -587,7 +783,8 @@ function answerKnowledgeQuestion(answer) {
 }
 
 function nextKnowledgeQuestion() {
-  if (state.knowledgeIndex < knowledgeQuestions.length - 1) {
+  const questions = getActiveKnowledgeQuestions();
+  if (state.knowledgeIndex < questions.length - 1) {
     state.knowledgeIndex += 1;
     renderKnowledgeQuestion();
     return;
@@ -597,12 +794,14 @@ function nextKnowledgeQuestion() {
 
 function finishKnowledgeTraining() {
   state.running = false;
+  const questions = getActiveKnowledgeQuestions();
+  const copy = getKnowledgeScreenCopy();
   const correct = state.knowledgeAnswers.filter(Boolean).length;
-  const score = (correct / knowledgeQuestions.length) * 20;
+  const score = (correct / questions.length) * 20;
   elements.knowledgeScreen.classList.add("hidden");
   elements.resultsScreen.classList.remove("hidden");
-  elements.resultTitle.textContent = score >= 16 ? "Conhecimentos consolidados" : "Consolidação concluída";
-  elements.resultSummary.textContent = `Respondeste correctamente a ${correct} de ${knowledgeQuestions.length} perguntas. Repete em voz alta as explicações das respostas que falhaste.`;
+  elements.resultTitle.textContent = score >= 16 ? copy.resultGood : copy.resultDone;
+  elements.resultSummary.textContent = `Respondeste correctamente a ${correct} de ${questions.length} ${copy.summary}. Repete em voz alta as explicações das respostas que falhaste.`;
   elements.finalScore.textContent = score.toFixed(1);
   elements.resultVerdict.textContent = score >= 16 ? "PREPARADO" : score >= 10 ? "A CONSOLIDAR" : "REPETIR";
   elements.resultVerdict.style.color = score >= 16 ? "var(--green)" : score >= 10 ? "var(--amber)" : "var(--red)";
@@ -613,13 +812,13 @@ function finishKnowledgeTraining() {
       <b>${score.toFixed(1)}/20</b>
     </div>`;
   elements.strengthsList.innerHTML =
-    correct > 0 ? `<li>Dominaste ${correct} conceitos essenciais sem depender da posição visual dos comandos.</li>` : "<li>Concluíste o exercício e identificaste os temas a estudar.</li>";
-  const wrongTopics = knowledgeQuestions
+    correct > 0 ? `<li>${copy.strength}</li>` : "<li>Concluíste o exercício e identificaste os temas a estudar.</li>";
+  const wrongTopics = questions
     .filter((_, index) => !state.knowledgeAnswers[index])
     .map((item) => `<li>${item.category}: ${item.question}</li>`)
     .join("");
   elements.improvementsList.innerHTML =
-    wrongTopics || "<li>Passar agora à Montagem completa e explicar cada acção em voz alta.</li>";
+    wrongTopics || `<li>${copy.improvement}</li>`;
   elements.progressValue.textContent = "100%";
   elements.liveScore.textContent = score.toFixed(1);
 }
@@ -737,6 +936,12 @@ function formatTime(totalSeconds) {
 }
 
 function calculateProgress() {
+  if (isKnowledgeScenario()) {
+    const questions = getActiveKnowledgeQuestions();
+    if (questions.length === 0) return 0;
+    return Math.round((state.knowledgeAnswers.length / questions.length) * 100);
+  }
+
   let points = 0;
   const total = 15;
   const m = state.m32;

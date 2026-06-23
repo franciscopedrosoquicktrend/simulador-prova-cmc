@@ -117,6 +117,15 @@
               <span class="radio-mark"></span>
             </button>
 
+            <button class="scenario-card" type="button" data-scenario="oral">
+              <span class="mode-icon">D</span>
+              <span>
+                <strong>Perguntas antes da prova</strong>
+                <small>Simulação de perguntas orais que o júri pode fazer antes de começar</small>
+              </span>
+              <span class="radio-mark"></span>
+            </button>
+
             <div class="start-card-heading">
               <span class="status-dot"></span>
               <span>SELECCIONAR MODO</span>
@@ -560,9 +569,9 @@
 
         <section id="knowledgeScreen" class="knowledge-screen hidden">
           <div class="knowledge-heading">
-            <span class="section-kicker">CONSOLIDAÇÃO PARA A PROVA REAL</span>
-            <h2>Explica antes de executar.</h2>
-            <p>
+            <span id="knowledgeKicker" class="section-kicker">CONSOLIDAÇÃO PARA A PROVA REAL</span>
+            <h2 id="knowledgeTitle">Explica antes de executar.</h2>
+            <p id="knowledgeIntro">
               Escolhe a resposta que darias ao examinador. Depois de responder,
               lê a explicação em voz alta antes de avançar.
             </p>
