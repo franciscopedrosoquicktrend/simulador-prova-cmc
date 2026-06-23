@@ -40,6 +40,55 @@ const tasks = {
   },
 };
 
+const practicalTaskVariants = {
+  m32: [
+    {
+      title: "Microfone no Main L/R",
+      description:
+        "Ligue o microfone dinâmico ao canal 1 e obtenha voz limpa nas duas colunas activas, sem ruído, clip ou realimentação.",
+      spoken:
+        "Na mesa MIDAS M trinta e dois, ligue o microfone dinâmico ao canal um, encaminhe-o para o Main L R e obtenha som limpo nas duas colunas, sem ruído nem realimentação.",
+    },
+    {
+      title: "Voz de apresentador nas colunas",
+      description:
+        "Prepare um microfone dinâmico para voz de apresentação no canal 1, com saída no Main L/R e som limpo nas duas colunas.",
+      spoken:
+        "Prepare um microfone dinâmico de apresentação no canal um, encaminhado para o Main L R, com som limpo nas duas colunas.",
+    },
+    {
+      title: "Teste rápido de microfone",
+      description:
+        "Monte e teste um microfone dinâmico no canal 1. Confirme routing, ganho seguro e saída equilibrada nas duas colunas activas.",
+      spoken:
+        "Monte e teste um microfone dinâmico no canal um. Confirme routing, ganho seguro e saída equilibrada nas duas colunas activas.",
+    },
+  ],
+  etc: [
+    {
+      title: "Programar e reproduzir Cue 1",
+      description:
+        "Ligue quatro projectores convencionais, coloque os canais 1 a 4 a 70%, grave a Cue 1, faça blackout de cena e reproduza a cue com GO.",
+      spoken:
+        "Na mesa ETC Element, ligue quatro projectores convencionais. Coloque os canais um a quatro a setenta por cento, grave a Cue um, retire a luz de cena e reproduza a Cue um através do botão Go.",
+    },
+    {
+      title: "Cena de entrada a 70%",
+      description:
+        "Prepare quatro projectores convencionais, programe os canais 1 a 4 a 70%, grave a Cue 1 e reproduza a cena a partir de blackout.",
+      spoken:
+        "Prepare quatro projectores convencionais. Programe os canais um a quatro a setenta por cento, grave a Cue um e reproduza a cena a partir de blackout.",
+    },
+    {
+      title: "Memória de luz simples",
+      description:
+        "Crie uma memória de luz com os canais 1 a 4 a 70%, grave-a como Cue 1, coloque o palco em Out e execute com GO.",
+      spoken:
+        "Crie uma memória de luz com os canais um a quatro a setenta por cento, grave como Cue um, coloque o palco em Out e execute com Go.",
+    },
+  ],
+};
+
 const helpData = {
   m32: [
     ["Gain", "Ajusta a intensidade do sinal à entrada. Não é o volume final."],
@@ -385,7 +434,7 @@ function getKnowledgeScreenCopy() {
 }
 
 const state = {
-  scenario: "essential",
+  scenario: "random",
   mode: "guided",
   running: false,
   paused: false,
@@ -401,6 +450,9 @@ const state = {
   m32: {},
   etc: {},
   completeSetup: {},
+  completeSetupOrder: completeSetupItems.map((item) => item.id),
+  stationOrder: ["m32", "etc"],
+  taskVariants: { m32: 0, etc: 0 },
   knowledgeIndex: 0,
   knowledgeAnswers: [],
 };
@@ -675,6 +727,57 @@ function playVoiceDemo() {
   });
 }
 
+function pickRandomIndex(items) {
+  return Math.floor(Math.random() * items.length);
+}
+
+function pickStationOrder() {
+  return Math.random() < 0.5 ? ["m32", "etc"] : ["etc", "m32"];
+}
+
+function shuffleItems(items) {
+  const shuffled = [...items];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
+function randomizePracticalExam() {
+  state.stationOrder = pickStationOrder();
+  state.taskVariants = {
+    m32: pickRandomIndex(practicalTaskVariants.m32),
+    etc: pickRandomIndex(practicalTaskVariants.etc),
+  };
+  state.completeSetupOrder = shuffleItems(completeSetupItems.map((item) => item.id));
+}
+
+function getTaskForStation(station) {
+  const baseTask = tasks[station];
+  const variant = practicalTaskVariants[station]?.[state.taskVariants[station]];
+  if (!variant) return baseTask;
+  return { ...baseTask, ...variant };
+}
+
+function getNextStationAfter(station) {
+  return state.stationOrder.find((candidate) => candidate !== station && !state.completed[candidate]);
+}
+
+function completeStationAndAdvance(station, successMessage) {
+  state.completed[station] = true;
+  logEvent(successMessage, "good");
+  updateAll();
+
+  const nextStation = getNextStationAfter(station);
+  if (nextStation) {
+    window.setTimeout(() => switchStation(nextStation), 500);
+    return;
+  }
+
+  finishSimulation();
+}
+
 function startSimulation() {
   clearInterval(state.timerId);
   resetM32();
@@ -682,7 +785,6 @@ function startSimulation() {
   state.running = true;
   state.paused = false;
   state.elapsed = 0;
-  state.currentStation = "m32";
   state.completed = { m32: false, etc: false };
   state.mistakes = [];
   state.actions = [];
@@ -691,6 +793,8 @@ function startSimulation() {
   state.completeSetup = {};
   state.knowledgeIndex = 0;
   state.knowledgeAnswers = [];
+  randomizePracticalExam();
+  state.currentStation = state.stationOrder[0];
 
   elements.welcomeScreen.classList.add("hidden");
   elements.resultsScreen.classList.add("hidden");
@@ -710,8 +814,8 @@ function startSimulation() {
   elements.liveScore.textContent = state.mode === "exam" ? "—" : "20.0";
   elements.eventLog.innerHTML = "";
 
-  switchStation("m32");
-  logEvent("A prova começou. O examinador observa a sequência de trabalho.", "good");
+  switchStation(state.currentStation);
+  logEvent(`A prova começou. Ordem sorteada: ${state.stationOrder.map((station) => station.toUpperCase()).join(" → ")}.`, "good");
 
   if (state.mode !== "practice") {
     state.timerId = setInterval(tickTimer, 1000);
@@ -867,14 +971,18 @@ function updateAll() {
 }
 
 function renderCompleteSetupChecklist() {
-  const isCompleteScenario = state.scenario === "complete";
+  const isCompleteScenario = state.scenario === "complete-random";
   elements.completeSetupPanel.classList.toggle("hidden", !isCompleteScenario);
   if (!isCompleteScenario) return;
 
-  const visibleItems =
+  const allowedIds =
     state.currentStation === "m32"
-      ? completeSetupItems.slice(0, 4)
-      : completeSetupItems.slice(4);
+      ? ["inventory", "micTypes", "channelPlan", "phantomPlan"]
+      : ["dmxChain", "dmxAddress", "cableSafety", "finalCheck"];
+  const visibleItems = state.completeSetupOrder
+    .filter((id) => allowedIds.includes(id))
+    .map((id) => completeSetupItems.find((item) => item.id === id))
+    .filter(Boolean);
 
   elements.completeSetupChecklist.innerHTML = visibleItems
     .map(
@@ -905,7 +1013,7 @@ function completeSetupItem(id) {
 }
 
 function isCompleteSetupReadyFor(station) {
-  if (state.scenario !== "complete") return true;
+  if (state.scenario !== "complete-random") return true;
   const required =
     station === "m32"
       ? ["inventory", "micTypes", "channelPlan", "phantomPlan"]
@@ -968,12 +1076,12 @@ function calculateProgress() {
 }
 
 function updateBrief() {
-  const task = tasks[state.currentStation];
+  const task = getTaskForStation(state.currentStation);
   elements.taskBrief.innerHTML = `<h3>${task.title}</h3><p>${task.description}</p>`;
 }
 
 function speakBrief() {
-  const task = tasks[state.currentStation];
+  const task = getTaskForStation(state.currentStation);
   playRecordedExaminerAudio(task).then((played) => {
     if (!played) speakBriefWithSystemVoice(task);
   });
@@ -1802,10 +1910,7 @@ function validateM32() {
     return;
   }
 
-  state.completed.m32 = true;
-  logEvent("Tarefa MIDAS M32 validada: som limpo nas duas colunas.", "good");
-  updateAll();
-  window.setTimeout(() => switchStation("etc"), 500);
+  completeStationAndAdvance("m32", "Tarefa MIDAS M32 validada: som limpo nas duas colunas.");
 }
 
 function getMissingM32Items() {
@@ -1850,10 +1955,7 @@ function validateEtc() {
     return;
   }
 
-  state.completed.etc = true;
-  logEvent("Tarefa ETC Element validada: Cue 1 reproduzida correctamente.", "good");
-  updateAll();
-  finishSimulation();
+  completeStationAndAdvance("etc", "Tarefa ETC Element validada: Cue 1 reproduzida correctamente.");
 }
 
 function getMissingEtcItems() {
