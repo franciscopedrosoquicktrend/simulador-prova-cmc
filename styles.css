@@ -1804,10 +1804,10 @@ input:focus-visible {
 
 .etc-surface {
   display: grid;
-  grid-template-columns: minmax(430px, 1.25fr) 120px minmax(300px, 0.9fr) 240px 180px;
+  grid-template-columns: minmax(430px, 1.2fr) 120px minmax(300px, 0.9fr) minmax(330px, 0.8fr);
   grid-template-areas:
-    "element-faders masters display keypad playback"
-    "element-faders masters display keypad playback";
+    "element-faders masters display playback"
+    "element-faders masters display keypad";
   gap: 12px;
   min-height: 450px;
   padding: 14px;
@@ -2063,7 +2063,7 @@ input:focus-visible {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
-  align-content: center;
+  align-content: start;
   padding: 10px;
   border: 1px solid rgba(52, 43, 40, 0.3);
   border-radius: 4px;
@@ -2112,7 +2112,7 @@ input:focus-visible {
 
 .etc-record-controls .go-key {
   grid-column: span 2;
-  min-height: 62px;
+  min-height: 54px;
   background: linear-gradient(#2e6f4b, #183e29);
   color: #8ff1b3;
   font-size: 11px;
@@ -2121,7 +2121,7 @@ input:focus-visible {
 .playback-faders {
   display: flex;
   grid-column: span 2;
-  height: 235px;
+  height: 118px;
   justify-content: space-around;
 }
 
@@ -2134,9 +2134,8 @@ input:focus-visible {
 }
 
 .playback-faders input {
-  width: 155px;
-  margin-top: 72px;
-  margin-bottom: 70px;
+  width: 92px;
+  margin: 40px -34px 34px;
 }
 
 .stage-footer {
