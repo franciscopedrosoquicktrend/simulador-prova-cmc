@@ -964,12 +964,18 @@ input:focus-visible {
 
 .m32-surface {
   display: grid;
-  grid-template-columns: 230px minmax(280px, 1fr) 90px 210px;
+  grid-template-columns: 220px minmax(360px, 0.95fr) minmax(340px, 1.15fr) 90px;
+  grid-template-areas:
+    "selected processing screen monitor"
+    "faders faders faders faders";
   gap: 12px;
-  min-height: 410px;
+  min-height: 560px;
   padding: 14px;
   background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 5px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     radial-gradient(circle at 50% 0, #353a3e 0, #22272b 48%, #161a1d 100%);
+  background-size: auto, 54px 100%, auto;
 }
 
 .selected-channel-panel,
@@ -978,6 +984,74 @@ input:focus-visible {
   border: 1px solid #121416;
   border-radius: 4px;
   background: rgba(15, 17, 19, 0.42);
+}
+
+.selected-channel-panel {
+  grid-area: selected;
+}
+
+.m32-processing-panel {
+  display: grid;
+  grid-area: processing;
+  grid-template-columns: repeat(4, minmax(90px, 1fr));
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid #121416;
+  border-radius: 4px;
+  background: rgba(15, 17, 19, 0.4);
+}
+
+.m32-mini-section {
+  display: flex;
+  min-height: 132px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid #9aa0a530;
+  border-radius: 5px;
+  color: #aeb5b8;
+  font-size: 7px;
+}
+
+.m32-mini-section strong {
+  margin-bottom: 8px;
+  color: #e4e0d7;
+  font-size: 7px;
+}
+
+.m32-mini-section small {
+  margin-top: 6px;
+  color: #737b80;
+  font-size: 6px;
+}
+
+.mini-knob,
+.mini-knob-row span {
+  display: block;
+  width: 38px;
+  height: 38px;
+  border: 3px solid #141617;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 230deg, #d06c38 0 32%, transparent 33%),
+    radial-gradient(circle, #3b4043 0 35%, #161819 36% 100%);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.mini-knob-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.m32-mini-section.wide .mini-knob-row {
+  grid-template-columns: repeat(4, 32px);
+}
+
+.m32-mini-section.wide .mini-knob-row span {
+  width: 32px;
+  height: 32px;
 }
 
 .section-title {
@@ -1120,6 +1194,7 @@ input:focus-visible {
 }
 
 .m32-screen-wrap {
+  grid-area: screen;
   padding: 8px;
   border: 1px solid #111315;
   border-radius: 4px;
@@ -1228,6 +1303,7 @@ input:focus-visible {
 }
 
 .monitor-panel {
+  grid-area: monitor;
   text-align: center;
 }
 
@@ -1253,8 +1329,11 @@ input:focus-visible {
 
 .fader-bank {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-area: faders;
+  grid-template-columns: 82px minmax(620px, 1fr) 82px;
   gap: 8px;
+  align-items: stretch;
+  min-height: 330px;
 }
 
 .channel-strip {
@@ -1265,6 +1344,61 @@ input:focus-visible {
   border: 1px solid #121416;
   border-radius: 3px;
   background: rgba(13, 15, 16, 0.5);
+}
+
+.m32-decorative-channel-bank {
+  display: grid;
+  grid-template-columns: repeat(15, minmax(34px, 1fr));
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid #121416;
+  border-radius: 3px;
+  background: rgba(13, 15, 16, 0.38);
+}
+
+.m32-decorative-channel-bank span {
+  position: relative;
+  display: block;
+  min-height: 300px;
+  border-right: 1px solid rgba(255, 255, 255, 0.24);
+  border-left: 1px solid rgba(255, 255, 255, 0.24);
+  background:
+    linear-gradient(#272d30 0 5px, transparent 5px 10px) 50% 42px / 12px 10px no-repeat,
+    linear-gradient(#789080, #789080) 50% 74px / 28px 18px no-repeat,
+    linear-gradient(#cfd5d2, #777f80) 50% var(--fake-pos) / 25px 18px no-repeat,
+    linear-gradient(#080909, #080909) 50% 172px / 6px 210px no-repeat;
+}
+
+.m32-decorative-channel-bank span::before {
+  content: attr(data-label);
+  position: absolute;
+  top: 96px;
+  right: 2px;
+  left: 2px;
+  display: grid;
+  min-height: 24px;
+  place-items: center;
+  border: 2px solid #090a0b;
+  background: #87906f;
+  color: #172012;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 6px;
+}
+
+.m32-decorative-channel-bank span::after {
+  content: "MUTE";
+  position: absolute;
+  top: 132px;
+  right: 7px;
+  left: 7px;
+  display: grid;
+  min-height: 18px;
+  place-items: center;
+  border-radius: 4px;
+  background: linear-gradient(#e4e7e4, #8c9495);
+  color: #1b2022;
+  font-size: 5px;
+  font-weight: 800;
 }
 
 .scribble-strip {
@@ -1670,15 +1804,76 @@ input:focus-visible {
 
 .etc-surface {
   display: grid;
-  grid-template-columns: minmax(370px, 1.5fr) 140px 270px 180px;
-  gap: 11px;
-  min-height: 420px;
+  grid-template-columns: minmax(430px, 1.25fr) 120px minmax(300px, 0.9fr) 240px 180px;
+  grid-template-areas:
+    "element-faders masters display keypad playback"
+    "element-faders masters display keypad playback";
+  gap: 12px;
+  min-height: 450px;
   padding: 14px;
   background:
-    radial-gradient(circle at 50% 0, #353a3e 0, #22272b 48%, #161a1d 100%);
+    linear-gradient(90deg, #15191c 0 14px, transparent 14px calc(100% - 14px), #15191c calc(100% - 14px)),
+    linear-gradient(180deg, #d6c7bf, #b7a7a0 72%, #81746f);
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.element-fader-wings {
+  display: grid;
+  grid-area: element-faders;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(52, 43, 40, 0.35);
+  border-radius: 4px;
+  background: rgba(58, 49, 45, 0.13);
+}
+
+.element-fader-bank {
+  padding: 7px;
+  border: 1px solid rgba(52, 43, 40, 0.22);
+  border-radius: 4px;
+  background: rgba(236, 226, 218, 0.28);
+}
+
+.element-fader-bank strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #4c4340;
+  font-size: 7px;
+  letter-spacing: 0.08em;
+}
+
+.element-mini-faders {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+
+.element-mini-faders span {
+  position: relative;
+  display: block;
+  height: 92px;
+  border-radius: 2px;
+  background:
+    linear-gradient(#25292b, #25292b) 50% 0 / 26px 10px no-repeat,
+    linear-gradient(#1c1e20, #1c1e20) 50% 84px / 26px 8px no-repeat,
+    linear-gradient(#222, #222) 50% 50% / 5px 78px no-repeat,
+    linear-gradient(#c7ced0, #5e686d) 50% var(--fake-pos) / 18px 15px no-repeat;
+}
+
+.element-mini-faders span::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  left: 3px;
+  bottom: -1px;
+  height: 6px;
+  border-radius: 1px;
+  background: #151719;
 }
 
 .etc-display {
+  grid-area: display;
   min-width: 0;
   padding: 9px;
   border: 5px solid #090b0c;
@@ -1780,12 +1975,14 @@ input:focus-visible {
 }
 
 .etc-master-controls {
+  grid-area: masters;
   display: flex;
   padding: 10px;
   align-items: center;
   flex-direction: column;
-  border: 1px solid #121416;
-  background: rgba(13, 15, 16, 0.42);
+  border: 1px solid rgba(52, 43, 40, 0.3);
+  border-radius: 4px;
+  background: rgba(49, 43, 41, 0.18);
 }
 
 .master-fader-wrap {
@@ -1862,13 +2059,15 @@ input:focus-visible {
 }
 
 .etc-keypad {
+  grid-area: keypad;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   align-content: center;
   padding: 10px;
-  border: 1px solid #121416;
-  background: rgba(13, 15, 16, 0.42);
+  border: 1px solid rgba(52, 43, 40, 0.3);
+  border-radius: 4px;
+  background: rgba(49, 43, 41, 0.18);
 }
 
 .etc-keypad button,
@@ -1896,13 +2095,15 @@ input:focus-visible {
 }
 
 .etc-record-controls {
+  grid-area: playback;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 7px;
   align-content: start;
   padding: 10px;
-  border: 1px solid #121416;
-  background: rgba(13, 15, 16, 0.42);
+  border: 1px solid rgba(52, 43, 40, 0.3);
+  border-radius: 4px;
+  background: rgba(49, 43, 41, 0.18);
 }
 
 .etc-record-controls .record-key {

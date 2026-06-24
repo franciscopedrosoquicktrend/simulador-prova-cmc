@@ -294,6 +294,29 @@
                       </button>
                     </section>
 
+                    <section class="m32-processing-panel" aria-label="Processamento e envios da M32">
+                      <div class="m32-mini-section">
+                        <strong>GATE</strong>
+                        <span class="mini-knob"></span>
+                        <small>THRESHOLD</small>
+                      </div>
+                      <div class="m32-mini-section">
+                        <strong>DYNAMICS</strong>
+                        <span class="mini-knob"></span>
+                        <small>COMP</small>
+                      </div>
+                      <div class="m32-mini-section wide">
+                        <strong>EQUALISER</strong>
+                        <div class="mini-knob-row"><span></span><span></span><span></span></div>
+                        <small>LOW · MID · HIGH</small>
+                      </div>
+                      <div class="m32-mini-section wide">
+                        <strong>BUS SENDS</strong>
+                        <div class="mini-knob-row"><span></span><span></span><span></span><span></span></div>
+                        <small>BUS 1 · 2 · 3 · 4</small>
+                      </div>
+                    </section>
+
                     <section class="m32-screen-wrap">
                       <div class="screen-tabs">
                         <button class="screen-tab active" type="button" data-page="home">HOME</button>
@@ -350,6 +373,24 @@
                           <output id="channelFaderValue">−∞</output>
                           <input id="channelFader" type="range" min="-90" max="10" value="-90" orient="vertical" />
                         </div>
+                      </div>
+
+                      <div class="m32-decorative-channel-bank" aria-hidden="true">
+                        <span data-label="CH02" style="--fake-pos: 45%"></span>
+                        <span data-label="CH03" style="--fake-pos: 58%"></span>
+                        <span data-label="CH04" style="--fake-pos: 52%"></span>
+                        <span data-label="CH05" style="--fake-pos: 36%"></span>
+                        <span data-label="CH06" style="--fake-pos: 61%"></span>
+                        <span data-label="CH07" style="--fake-pos: 49%"></span>
+                        <span data-label="CH08" style="--fake-pos: 42%"></span>
+                        <span data-label="CH09" style="--fake-pos: 54%"></span>
+                        <span data-label="CH10" style="--fake-pos: 63%"></span>
+                        <span data-label="CH11" style="--fake-pos: 39%"></span>
+                        <span data-label="CH12" style="--fake-pos: 50%"></span>
+                        <span data-label="CH13" style="--fake-pos: 57%"></span>
+                        <span data-label="CH14" style="--fake-pos: 47%"></span>
+                        <span data-label="CH15" style="--fake-pos: 55%"></span>
+                        <span data-label="CH16" style="--fake-pos: 44%"></span>
                       </div>
 
                       <div class="channel-strip main-strip">
@@ -452,6 +493,30 @@
                   </div>
 
                   <div class="etc-surface">
+                    <section class="element-fader-wings" aria-label="Submasters e faders da ETC Element">
+                      <div class="element-fader-bank">
+                        <strong>SUB 1–10</strong>
+                        <div class="element-mini-faders">
+                          <span style="--fake-pos: 35%"></span><span style="--fake-pos: 48%"></span><span style="--fake-pos: 41%"></span><span style="--fake-pos: 62%"></span><span style="--fake-pos: 55%"></span>
+                          <span style="--fake-pos: 38%"></span><span style="--fake-pos: 46%"></span><span style="--fake-pos: 57%"></span><span style="--fake-pos: 44%"></span><span style="--fake-pos: 52%"></span>
+                        </div>
+                      </div>
+                      <div class="element-fader-bank">
+                        <strong>SUB 11–20</strong>
+                        <div class="element-mini-faders">
+                          <span style="--fake-pos: 50%"></span><span style="--fake-pos: 43%"></span><span style="--fake-pos: 64%"></span><span style="--fake-pos: 37%"></span><span style="--fake-pos: 48%"></span>
+                          <span style="--fake-pos: 59%"></span><span style="--fake-pos: 45%"></span><span style="--fake-pos: 53%"></span><span style="--fake-pos: 39%"></span><span style="--fake-pos: 61%"></span>
+                        </div>
+                      </div>
+                      <div class="element-fader-bank">
+                        <strong>SUB 21–30</strong>
+                        <div class="element-mini-faders">
+                          <span style="--fake-pos: 44%"></span><span style="--fake-pos: 51%"></span><span style="--fake-pos: 58%"></span><span style="--fake-pos: 40%"></span><span style="--fake-pos: 63%"></span>
+                          <span style="--fake-pos: 47%"></span><span style="--fake-pos: 54%"></span><span style="--fake-pos: 36%"></span><span style="--fake-pos: 49%"></span><span style="--fake-pos: 60%"></span>
+                        </div>
+                      </div>
+                    </section>
+
                     <section class="etc-display">
                       <div class="etc-display-header">
                         <strong>LIVE: CHANNELS</strong>
