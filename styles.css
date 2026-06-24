@@ -2179,6 +2179,340 @@ input:focus-visible {
   min-width: 190px;
 }
 
+.auditorium-screen {
+  width: min(1400px, calc(100% - 40px));
+  min-height: calc(100vh - 78px);
+  margin: auto;
+  padding: 28px 0 70px;
+}
+
+.auditorium-layout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 18px;
+}
+
+.auditorium-brief-panel,
+.auditorium-stage-panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.auditorium-brief-panel {
+  display: flex;
+  max-height: calc(100vh - 130px);
+  padding: 22px;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.auditorium-brief-panel h2 {
+  margin: 12px 0;
+  font-family: "Arial Narrow", Impact, sans-serif;
+  font-size: 42px;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.auditorium-brief-panel p {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.auditorium-rule {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid #334048;
+  background: #101417;
+}
+
+.auditorium-rule strong {
+  color: var(--green);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.auditorium-rule span {
+  color: #c4cbc9;
+  font-size: 11px;
+}
+
+.auditorium-checklist {
+  display: grid;
+  gap: 8px;
+}
+
+.auditorium-step {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 4px 10px;
+  padding: 10px;
+  border: 1px solid #2a3137;
+  background: #111519;
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+}
+
+.auditorium-step span {
+  grid-row: span 3;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid #48525a;
+  border-radius: 50%;
+  font-size: 8px;
+}
+
+.auditorium-step strong {
+  color: var(--accent);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auditorium-step b {
+  color: #d6dad9;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.auditorium-step small {
+  color: #7d878e;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.auditorium-step.done {
+  border-color: rgba(66, 211, 146, 0.55);
+  background: rgba(66, 211, 146, 0.08);
+}
+
+.auditorium-step.done span {
+  border-color: var(--green);
+  background: var(--green);
+  color: #07140e;
+}
+
+.stage-toolbar.compact {
+  min-height: 64px;
+}
+
+.auditorium-map {
+  padding: 18px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    #0c0f11;
+  background-size: 24px 24px;
+}
+
+.auditorium-stage-visual {
+  position: relative;
+  min-height: 360px;
+  overflow: hidden;
+  border: 2px solid #394148;
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse at center, rgba(82, 92, 99, 0.35), transparent 55%),
+    linear-gradient(180deg, #15191c, #080a0b);
+}
+
+.auditorium-zone {
+  display: grid;
+  place-items: center;
+  border: 1px solid #3c464e;
+  background: rgba(255, 255, 255, 0.035);
+  color: #828c93;
+  font-size: 10px;
+  text-transform: uppercase;
+  transition: 180ms ease;
+}
+
+.auditorium-zone.active {
+  border-color: rgba(244, 214, 112, 0.75);
+  background: rgba(244, 214, 112, 0.17);
+  color: #fff0a5;
+  box-shadow: 0 0 26px rgba(244, 214, 112, 0.18);
+}
+
+.audience-zone {
+  min-height: 90px;
+  margin-bottom: 12px;
+  border-radius: 0 0 42% 42%;
+}
+
+.stage-zone {
+  position: absolute;
+  right: 25%;
+  bottom: 34px;
+  left: 25%;
+  height: 110px;
+  border-radius: 50% 50% 12px 12px;
+}
+
+.back-zone {
+  position: absolute;
+  top: 20px;
+  right: 28%;
+  left: 28%;
+  height: 70px;
+}
+
+.column-zone {
+  position: absolute;
+  top: 98px;
+  width: 120px;
+  height: 170px;
+}
+
+.column-zone.left {
+  left: 34px;
+}
+
+.column-zone.right {
+  right: 34px;
+}
+
+.pulpit-block {
+  position: absolute;
+  z-index: 2;
+  right: calc(50% - 75px);
+  bottom: 78px;
+  display: grid;
+  width: 150px;
+  min-height: 78px;
+  place-items: center;
+  border: 2px solid #6e5f48;
+  border-radius: 6px;
+  background: linear-gradient(#5a4631, #2d2118);
+  color: #f4efe6;
+  font-size: 10px;
+}
+
+.pulpit-block.active {
+  box-shadow: 0 0 20px rgba(66, 211, 146, 0.28);
+}
+
+.pulpit-mic {
+  position: absolute;
+  top: -20px;
+  display: grid;
+  width: 46px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid #394148;
+  border-radius: 16px;
+  background: #121619;
+  color: #626d75;
+  font-size: 7px;
+}
+
+.pulpit-mic:first-of-type {
+  left: 25px;
+}
+
+.pulpit-mic:last-of-type {
+  right: 25px;
+}
+
+.pulpit-mic.active {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.pulpit-zone {
+  position: absolute;
+  right: calc(50% - 120px);
+  bottom: 52px;
+  width: 240px;
+  height: 140px;
+  border-radius: 50%;
+}
+
+.auditorium-tech-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.conference-chain,
+.auditorium-mixer {
+  padding: 14px;
+  border: 1px solid #333c43;
+  border-radius: 6px;
+  background: #11161a;
+}
+
+.conference-chain {
+  display: grid;
+  grid-template-columns: 150px repeat(4, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.conference-chain strong {
+  color: #dce2df;
+  font-size: 11px;
+}
+
+.chain-node {
+  position: relative;
+  display: grid;
+  min-height: 58px;
+  place-items: center;
+  border: 1px solid #414b52;
+  border-radius: 8px;
+  background: #1a2024;
+  color: #7d878e;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.chain-node + .chain-node::before {
+  content: "";
+  position: absolute;
+  left: -11px;
+  width: 10px;
+  height: 2px;
+  background: #414b52;
+}
+
+.chain-node.active {
+  border-color: var(--green);
+  color: var(--green);
+  box-shadow: 0 0 12px rgba(66, 211, 146, 0.16);
+}
+
+.auditorium-mixer {
+  display: grid;
+  gap: 8px;
+}
+
+.auditorium-mixer strong {
+  color: #f1f2ee;
+  text-transform: uppercase;
+}
+
+.auditorium-mixer span,
+.auditorium-mixer small {
+  color: var(--muted);
+}
+
+.auditorium-mixer.active {
+  border-color: var(--green);
+}
+
+.auditorium-mixer.active small {
+  color: var(--green);
+}
+
 .results-screen {
   width: min(1040px, calc(100% - 40px));
   margin: auto;

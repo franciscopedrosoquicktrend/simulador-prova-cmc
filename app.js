@@ -123,6 +123,105 @@ const completeSetupItems = [
   { id: "finalCheck", label: "Teste final: três microfones, L/R, quatro projectores, Blackout e GO" },
 ];
 
+const auditoriumSteps = [
+  {
+    id: "daisy-safe",
+    phase: "01 · Daisy chain",
+    label: "Confirmar sistema sem alimentação antes de ligar a cadeia",
+    detail: "Evita ligar/desligar módulos com alimentação aplicada.",
+  },
+  {
+    id: "daisy-base",
+    phase: "01 · Daisy chain",
+    label: "Ligar a unidade/base do sistema de microfones",
+    detail: "A base é o início da cadeia e alimenta/controla os microfones.",
+  },
+  {
+    id: "daisy-chain",
+    phase: "01 · Daisy chain",
+    label: "Ligar OUT de um microfone ao IN do seguinte",
+    detail: "Isto é a ligação em série: base → mic A → mic B → mic C.",
+  },
+  {
+    id: "daisy-check",
+    phase: "01 · Daisy chain",
+    label: "Confirmar ordem da cadeia, cabos seguros e último microfone",
+    detail: "Verifica se não há cabos cruzados, soltos ou em zona de passagem.",
+  },
+  {
+    id: "pulpit-place",
+    phase: "02 · Púlpito",
+    label: "Colocar dois microfones no púlpito",
+    detail: "Os dois microfones devem cobrir a voz sem tapar o orador.",
+  },
+  {
+    id: "pulpit-aim",
+    phase: "02 · Púlpito",
+    label: "Orientar os microfones para a boca e afastar das colunas",
+    detail: "Reduz ruído e risco de realimentação.",
+  },
+  {
+    id: "pulpit-cables",
+    phase: "02 · Púlpito",
+    label: "Passar cabos pelo caminho mais seguro",
+    detail: "Sem puxar conectores e sem criar risco de tropeção.",
+  },
+  {
+    id: "sound-link",
+    phase: "03 · Ligação à mesa",
+    label: "Ligar os microfones/sistema à mesa de mistura de som",
+    detail: "Confirma entrada correcta e identifica os canais.",
+  },
+  {
+    id: "sound-test",
+    phase: "03 · Ligação à mesa",
+    label: "Fazer teste de voz e confirmar sinal sem ruído",
+    detail: "Mesmo sem operar a mesa, tens de validar que a ligação funciona.",
+  },
+  {
+    id: "light-console",
+    phase: "04 · Luz do auditório",
+    label: "Ir à mesa de luz e preparar controlo geral",
+    detail: "Confirma consola, blackout/grandmaster e controlo das zonas.",
+  },
+  {
+    id: "light-stage",
+    phase: "04 · Luz do auditório",
+    label: "Acender/ajustar a luz do palco",
+    detail: "O palco precisa de leitura visual geral.",
+  },
+  {
+    id: "light-pulpit",
+    phase: "04 · Luz do auditório",
+    label: "Acender/ajustar a luz do púlpito",
+    detail: "A zona do orador tem de ficar bem iluminada.",
+  },
+  {
+    id: "light-columns",
+    phase: "04 · Luz do auditório",
+    label: "Acender/ajustar a luz das colunas laterais",
+    detail: "As colunas/zonas laterais fazem parte do ambiente visual.",
+  },
+  {
+    id: "light-back",
+    phase: "04 · Luz do auditório",
+    label: "Acender/ajustar a luz de fundo de palco",
+    detail: "Dá profundidade e separa o orador do fundo.",
+  },
+  {
+    id: "light-audience",
+    phase: "04 · Luz do auditório",
+    label: "Acender/ajustar a luz da plateia/público",
+    detail: "A plateia deve ter luz suficiente para circulação e leitura.",
+  },
+  {
+    id: "final-validate",
+    phase: "Validação",
+    label: "Validar microfones, púlpito, mesa e zonas de luz",
+    detail: "Confirma que o sistema serve a conferência completa.",
+  },
+];
+
 const knowledgeQuestions = [
   {
     category: "ÁUDIO · CONCEITOS",
@@ -434,7 +533,7 @@ function getKnowledgeScreenCopy() {
 }
 
 const state = {
-  scenario: "random",
+  scenario: "auditorium",
   mode: "guided",
   running: false,
   paused: false,
@@ -449,6 +548,7 @@ const state = {
   examinerAudio: null,
   m32: {},
   etc: {},
+  auditorium: {},
   completeSetup: {},
   completeSetupOrder: completeSetupItems.map((item) => item.id),
   stationOrder: ["m32", "etc"],
@@ -466,6 +566,7 @@ function cacheElements() {
     "liveScore",
     "pauseButton",
     "welcomeScreen",
+    "auditoriumScreen",
     "simulatorScreen",
     "resultsScreen",
     "knowledgeScreen",
@@ -515,6 +616,25 @@ function cacheElements() {
     "improvementsList",
     "retryButton",
     "homeButton",
+    "auditoriumChecklist",
+    "auditoriumHint",
+    "auditoriumValidateButton",
+    "auditoriumResetButton",
+    "daisyBase",
+    "daisyMicA",
+    "daisyMicB",
+    "daisyMicC",
+    "pulpitMicOne",
+    "pulpitMicTwo",
+    "auditoriumPulpit",
+    "auditoriumMixer",
+    "auditoriumMixerStatus",
+    "auditoriumStageLight",
+    "auditoriumPulpitLight",
+    "auditoriumColumnLightLeft",
+    "auditoriumColumnLightRight",
+    "auditoriumBackLight",
+    "auditoriumAudience",
     "micSocket",
     "micSocketState",
     "mainLSocket",
@@ -618,10 +738,18 @@ function resetEtc() {
   };
 }
 
+function resetAuditorium() {
+  state.auditorium = {
+    completedSteps: {},
+    validated: false,
+  };
+}
+
 function initialize() {
   cacheElements();
   resetM32();
   resetEtc();
+  resetAuditorium();
   bindEvents();
   updateAll();
 }
@@ -667,6 +795,18 @@ function bindEvents() {
   elements.validateButton.addEventListener("click", validateCurrentTask);
   elements.retryButton.addEventListener("click", startSimulation);
   elements.homeButton.addEventListener("click", returnHome);
+  elements.auditoriumValidateButton.addEventListener("click", validateAuditoriumTask);
+  elements.auditoriumResetButton.addEventListener("click", () => {
+    resetAuditorium();
+    state.mistakes = [];
+    renderAuditorium();
+    updateHeader();
+  });
+  elements.auditoriumChecklist.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-auditorium-step]");
+    if (!button) return;
+    toggleAuditoriumStep(button.dataset.auditoriumStep);
+  });
 
   elements.micSocket.addEventListener("click", toggleMicConnection);
   elements.mainLSocket.addEventListener("click", () => toggleOutputConnection("left"));
@@ -778,10 +918,167 @@ function completeStationAndAdvance(station, successMessage) {
   finishSimulation();
 }
 
+function toggleAuditoriumStep(stepId) {
+  const step = auditoriumSteps.find((item) => item.id === stepId);
+  if (!step) return;
+
+  state.auditorium.completedSteps[stepId] = !state.auditorium.completedSteps[stepId];
+  state.auditorium.validated = false;
+  recordAction(`auditorium-${stepId}`);
+  renderAuditorium();
+  updateHeader();
+}
+
+function isAuditoriumStepDone(stepId) {
+  return Boolean(state.auditorium.completedSteps[stepId]);
+}
+
+function getAuditoriumCompletedCount() {
+  return auditoriumSteps.filter((step) => isAuditoriumStepDone(step.id)).length;
+}
+
+function renderAuditorium() {
+  elements.auditoriumChecklist.innerHTML = auditoriumSteps
+    .map(
+      (step, index) => `
+        <button class="auditorium-step ${isAuditoriumStepDone(step.id) ? "done" : ""}" type="button" data-auditorium-step="${step.id}">
+          <span>${isAuditoriumStepDone(step.id) ? "✓" : index + 1}</span>
+          <strong>${step.phase}</strong>
+          <b>${step.label}</b>
+          <small>${step.detail}</small>
+        </button>`,
+    )
+    .join("");
+
+  updateAuditoriumVisual();
+  const next = auditoriumSteps.find((step) => !isAuditoriumStepDone(step.id));
+  elements.auditoriumHint.innerHTML = `<span class="hint-icon">i</span><p>${
+    next ? `Próximo passo: ${next.label}.` : "Tudo montado. Faz a validação final."
+  }</p>`;
+}
+
+function updateAuditoriumVisual() {
+  const chainReady = ["daisy-safe", "daisy-base", "daisy-chain", "daisy-check"].every(isAuditoriumStepDone);
+  [elements.daisyBase, elements.daisyMicA, elements.daisyMicB, elements.daisyMicC].forEach((node, index) => {
+    node.classList.toggle("active", index === 0 ? isAuditoriumStepDone("daisy-base") : chainReady);
+  });
+
+  const pulpitReady = ["pulpit-place", "pulpit-aim", "pulpit-cables"].every(isAuditoriumStepDone);
+  elements.auditoriumPulpit.classList.toggle("active", pulpitReady);
+  elements.pulpitMicOne.classList.toggle("active", isAuditoriumStepDone("pulpit-place"));
+  elements.pulpitMicTwo.classList.toggle("active", isAuditoriumStepDone("pulpit-place"));
+
+  const soundReady = ["sound-link", "sound-test"].every(isAuditoriumStepDone);
+  elements.auditoriumMixer.classList.toggle("active", soundReady);
+  elements.auditoriumMixerStatus.textContent = soundReady ? "Ligação testada" : "Sem ligação";
+
+  elements.auditoriumStageLight.classList.toggle("active", isAuditoriumStepDone("light-stage"));
+  elements.auditoriumPulpitLight.classList.toggle("active", isAuditoriumStepDone("light-pulpit"));
+  elements.auditoriumColumnLightLeft.classList.toggle("active", isAuditoriumStepDone("light-columns"));
+  elements.auditoriumColumnLightRight.classList.toggle("active", isAuditoriumStepDone("light-columns"));
+  elements.auditoriumBackLight.classList.toggle("active", isAuditoriumStepDone("light-back"));
+  elements.auditoriumAudience.classList.toggle("active", isAuditoriumStepDone("light-audience"));
+}
+
+function validateAuditoriumTask() {
+  const missing = auditoriumSteps.filter((step) => !isAuditoriumStepDone(step.id));
+  if (missing.length > 0) {
+    addMistake("auditorium-incomplete", `Validação pedida com passos por concluir: ${missing.slice(0, 3).map((step) => step.label).join("; ")}.`, 1);
+    renderAuditorium();
+    updateHeader();
+    return;
+  }
+
+  state.auditorium.validated = true;
+  finishAuditoriumSimulation();
+}
+
+function finishAuditoriumSimulation() {
+  clearInterval(state.timerId);
+  state.running = false;
+  elements.pauseButton.disabled = true;
+  const scores = calculateAuditoriumScores();
+  saveBestScore(scores.total);
+  renderAuditoriumResults(scores);
+  elements.auditoriumScreen.classList.add("hidden");
+  elements.resultsScreen.classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function calculateAuditoriumScores() {
+  const completed = getAuditoriumCompletedCount();
+  const completionRatio = completed / auditoriumSteps.length;
+  const validationMistakes = state.mistakes.filter((mistake) => mistake.code === "auditorium-incomplete").length;
+
+  let comprehension = 5 * completionRatio;
+  let quality = 5 * completionRatio - validationMistakes * 0.3;
+  let knowledge = 5 * completionRatio - validationMistakes * 0.25;
+  let speed = 5;
+  if (state.elapsed >= 18 * 60) speed = 4;
+  if (state.elapsed >= 20 * 60) speed = 3;
+  if (state.elapsed >= 23 * 60) speed = 2;
+  if (state.elapsed >= 25 * 60) speed = 1;
+  if (state.elapsed >= 30 * 60) speed = 0;
+  if (state.mode === "practice") speed = 5;
+
+  const rounded = {
+    comprehension: clampScore(comprehension),
+    quality: clampScore(quality),
+    speed: clampScore(speed),
+    knowledge: clampScore(knowledge),
+  };
+  rounded.total = rounded.comprehension + rounded.quality + rounded.speed + rounded.knowledge;
+  return rounded;
+}
+
+function renderAuditoriumResults(scores) {
+  const passed = scores.total >= 9.5;
+  const excellent = scores.total >= 17;
+  const timeText = state.mode === "practice" ? "modo de prática livre" : `${formatTime(state.elapsed)} de execução`;
+
+  elements.resultTitle.textContent = excellent ? "Prova real bem montada" : passed ? "Prova real concluída" : "Montagem a repetir";
+  elements.resultSummary.textContent = `Resultado estimado com ${timeText}. Esta versão avalia montagem física, ligação de microfones, púlpito e zonas de luz do auditório.`;
+  elements.finalScore.textContent = scores.total.toFixed(1);
+  elements.resultVerdict.textContent = excellent ? "MUITO BOM" : passed ? "APROVADO" : "A REVER";
+  elements.resultVerdict.style.color = excellent ? "var(--green)" : passed ? "var(--amber)" : "var(--red)";
+
+  const criteria = [
+    ["Compreensão da tarefa", scores.comprehension],
+    ["Qualidade", scores.quality],
+    ["Celeridade", scores.speed],
+    ["Conhecimentos", scores.knowledge],
+  ];
+  elements.criteriaResults.innerHTML = criteria
+    .map(
+      ([label, score]) => `
+        <div class="criterion-result">
+          <strong>${label}</strong>
+          <div class="score-bar"><i style="width:${(score / 5) * 100}%"></i></div>
+          <b>${score.toFixed(1)}/5</b>
+        </div>`,
+    )
+    .join("");
+
+  elements.strengthsList.innerHTML = [
+    "Treinaste a prova como montagem real de conferência/auditório.",
+    "Separaste microfones, púlpito, mesa de som e iluminação por zonas.",
+    "A validação final confirma o sistema completo, não apenas uma mesa.",
+  ]
+    .map((item) => `<li>${item}</li>`)
+    .join("");
+
+  const mistakeMessages = [...new Set(state.mistakes.map((mistake) => mistake.message))];
+  elements.improvementsList.innerHTML =
+    mistakeMessages.length > 0
+      ? mistakeMessages.map((item) => `<li>${item}</li>`).join("")
+      : "<li>Repetir a montagem real com a ordem: Daisy → púlpito → mesa de som → zonas de luz.</li>";
+}
+
 function startSimulation() {
   clearInterval(state.timerId);
   resetM32();
   resetEtc();
+  resetAuditorium();
   state.running = true;
   state.paused = false;
   state.elapsed = 0;
@@ -797,6 +1094,8 @@ function startSimulation() {
   state.currentStation = state.stationOrder[0];
 
   elements.welcomeScreen.classList.add("hidden");
+  elements.auditoriumScreen.classList.add("hidden");
+  elements.simulatorScreen.classList.add("hidden");
   elements.resultsScreen.classList.add("hidden");
   elements.knowledgeScreen.classList.add("hidden");
 
@@ -805,6 +1104,19 @@ function startSimulation() {
     elements.knowledgeScreen.classList.remove("hidden");
     elements.pauseButton.disabled = true;
     renderKnowledgeQuestion();
+    updateHeader();
+    return;
+  }
+
+  if (state.scenario === "auditorium") {
+    elements.auditoriumScreen.classList.remove("hidden");
+    elements.pauseButton.disabled = state.mode === "practice";
+    elements.liveScore.textContent = state.mode === "exam" ? "—" : "20.0";
+    renderAuditorium();
+    logEvent("Prova real de auditório iniciada.", "good");
+    if (state.mode !== "practice") {
+      state.timerId = setInterval(tickTimer, 1000);
+    }
     updateHeader();
     return;
   }
@@ -828,6 +1140,7 @@ function returnHome() {
   clearInterval(state.timerId);
   state.running = false;
   elements.resultsScreen.classList.add("hidden");
+  elements.auditoriumScreen.classList.add("hidden");
   elements.simulatorScreen.classList.add("hidden");
   elements.knowledgeScreen.classList.add("hidden");
   elements.welcomeScreen.classList.remove("hidden");
@@ -1033,7 +1346,8 @@ function updateHeader() {
   elements.progressValue.textContent = `${progress}%`;
 
   if (state.mode !== "exam" && state.running) {
-    elements.liveScore.textContent = calculateScores().total.toFixed(1);
+    const score = state.scenario === "auditorium" ? calculateAuditoriumScores().total : calculateScores().total;
+    elements.liveScore.textContent = score.toFixed(1);
   }
 }
 
@@ -1044,6 +1358,10 @@ function formatTime(totalSeconds) {
 }
 
 function calculateProgress() {
+  if (state.scenario === "auditorium") {
+    return Math.round((getAuditoriumCompletedCount() / auditoriumSteps.length) * 100);
+  }
+
   if (isKnowledgeScenario()) {
     const questions = getActiveKnowledgeQuestions();
     if (questions.length === 0) return 0;

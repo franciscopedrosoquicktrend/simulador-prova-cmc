@@ -90,17 +90,26 @@
               <span>SELECCIONAR MISSÃO</span>
             </div>
 
-            <button class="scenario-card selected" type="button" data-scenario="random">
+            <button class="scenario-card selected" type="button" data-scenario="auditorium">
               <span class="mode-icon">A</span>
               <span>
-                <strong>Prova prática aleatória</strong>
-                <small>Som e luz com ordem sorteada, sem perguntas teóricas</small>
+                <strong>Prova real — auditório</strong>
+                <small>Daisy chain de microfones, púlpito, ligação à mesa e zonas de luz</small>
+              </span>
+              <span class="radio-mark"></span>
+            </button>
+
+            <button class="scenario-card" type="button" data-scenario="random">
+              <span class="mode-icon">B</span>
+              <span>
+                <strong>Prova prática aleatória antiga</strong>
+                <small>Operação directa de M32 e ETC Element</small>
               </span>
               <span class="radio-mark"></span>
             </button>
 
             <button class="scenario-card" type="button" data-scenario="complete-random">
-              <span class="mode-icon">B</span>
+              <span class="mode-icon">C</span>
               <span>
                 <strong>Demonstração prática completa</strong>
                 <small>Montagem, segurança, microfones, phantom, DMX e teste final</small>
@@ -153,6 +162,85 @@
             <p class="start-note">
               O simulador guarda o teu melhor resultado neste computador.
             </p>
+          </div>
+        </section>
+
+        <section id="auditoriumScreen" class="auditorium-screen hidden">
+          <div class="auditorium-layout">
+            <aside class="auditorium-brief-panel">
+              <div class="panel-label">PROVA REAL RECONSTRUÍDA</div>
+              <h2>Montagem de auditório</h2>
+              <p>
+                Treina a prova como aconteceu: sistema de microfones em cadeia,
+                dois microfones no púlpito, ligação física à mesa de som e
+                focos de luz por zonas do auditório.
+              </p>
+
+              <div class="auditorium-rule">
+                <strong>Regra operacional</strong>
+                <span>Montar → ligar → testar → iluminar por zonas → validar.</span>
+              </div>
+
+              <div id="auditoriumChecklist" class="auditorium-checklist"></div>
+            </aside>
+
+            <section class="auditorium-stage-panel">
+              <div class="stage-toolbar compact">
+                <div>
+                  <span class="panel-label">SIMULAÇÃO DE ESPAÇO REAL</span>
+                  <h2>Auditório / antiga igreja</h2>
+                </div>
+                <div class="toolbar-actions">
+                  <button id="auditoriumResetButton" class="toolbar-button danger" type="button">
+                    Reiniciar montagem
+                  </button>
+                </div>
+              </div>
+
+              <div class="auditorium-map">
+                <div id="auditoriumAudience" class="auditorium-zone audience-zone">
+                  <span>Plateia / público</span>
+                </div>
+                <div class="auditorium-stage-visual">
+                  <div id="auditoriumBackLight" class="auditorium-zone back-zone">Fundo de palco</div>
+                  <div id="auditoriumStageLight" class="auditorium-zone stage-zone">Palco</div>
+                  <div id="auditoriumColumnLightLeft" class="auditorium-zone column-zone left">Coluna L</div>
+                  <div id="auditoriumColumnLightRight" class="auditorium-zone column-zone right">Coluna R</div>
+                  <div id="auditoriumPulpit" class="pulpit-block">
+                    <strong>PÚLPITO</strong>
+                    <span id="pulpitMicOne" class="pulpit-mic">MIC 1</span>
+                    <span id="pulpitMicTwo" class="pulpit-mic">MIC 2</span>
+                  </div>
+                  <div id="auditoriumPulpitLight" class="auditorium-zone pulpit-zone">Luz púlpito</div>
+                </div>
+
+                <div class="auditorium-tech-row">
+                  <div class="conference-chain">
+                    <strong>Sistema de microfones Daisy</strong>
+                    <div id="daisyBase" class="chain-node">BASE</div>
+                    <div id="daisyMicA" class="chain-node">MIC A</div>
+                    <div id="daisyMicB" class="chain-node">MIC B</div>
+                    <div id="daisyMicC" class="chain-node">MIC C</div>
+                  </div>
+                  <div id="auditoriumMixer" class="auditorium-mixer">
+                    <strong>Mesa de som</strong>
+                    <span>Entrada sistema / púlpito</span>
+                    <small id="auditoriumMixerStatus">Sem ligação</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stage-footer">
+                <div id="auditoriumHint" class="context-hint">
+                  <span class="hint-icon">i</span>
+                  <p>Começa pela cadeia de microfones antes de passar ao púlpito e à luz.</p>
+                </div>
+                <button id="auditoriumValidateButton" class="primary-button validate-button" type="button">
+                  Validar prova real
+                  <span aria-hidden="true">✓</span>
+                </button>
+              </div>
+            </section>
           </div>
         </section>
 
